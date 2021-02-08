@@ -1,2 +1,2 @@
 # TCRFactory
-The pipeline for NGS analysis.
+A pipeline for NGS analysis with WEB-GUI.
