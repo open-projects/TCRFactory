@@ -2,6 +2,8 @@ import os
 import re
 import glob
 import inspect
+import random
+import string
 
 import requests
 import zipfile
@@ -44,12 +46,18 @@ class ToolChecker:
     def check_tools(self, objects):
         checked = 0
         for obj in objects:
+            if not obj.name:
+                raise Exception("Can't find the tool name")
+
             if not self._bin.find(obj.name):
+                tool_dir = '/' + re.sub(r'\.[^.]*$', '', re.sub(r'[^A-Za-z0-9._-]', '', obj.name))
+                if not obj.url:
+                    raise Exception("Can't find the tool URL to install: {}".format(obj.name))
                 print('Installing: {}'.format(obj.url), end=" ")
 
                 r = requests.get(obj.url)
                 z = zipfile.ZipFile(io.BytesIO(r.content))
-                z.extractall(self._bin.path())
+                z.extractall(self._bin.path() + tool_dir)
 
                 if self._bin.find(obj.name):
                     print('...OK')
@@ -140,17 +148,14 @@ class SampleInfo:
 # end of class SampleInfo
 
 
-class GitHubTool:
-    def __init__(self):
-        ...
-
-    def install(self, path):
-        ...
-
-
-class JavaTool:
+class Tool:
     name = None
+    url = None
 
+# end of class Tool
+
+
+class JavaTool(Tool):
     def __init__(self, path):
         self._jar = (path.find(self.name) or [None])[0]
         self._xmx = Xmx().get()
