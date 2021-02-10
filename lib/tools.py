@@ -36,12 +36,12 @@ class Bin:
     def path(self):
         return self._bin
 
-# end of Bin class (Singleton)
+# end of class Bin (Singleton)
 
 
 class ToolChecker:
-    def __init__(self, bin_dir):
-        self._bin = bin_dir
+    def __init__(self):
+        self._bin = Bin()
 
     def check_tools(self, objects):
         checked = 0
@@ -343,7 +343,7 @@ class Xmx:
 
         return xmx
 
-# end of Xmx class (Singleton)
+# end of class Xmx (Singleton)
 
 
 class Log:
@@ -359,5 +359,5 @@ class Log:
             with open(self._file_name, "w") as lg:
                 lg.write(self._log)
 
-# end of Log class
+# end of class Log
 

@@ -4,13 +4,11 @@
 # D. Malko
 # 2021
 
-import os
 import re
-import sys
-import glob
 import argparse
 
 from lib.tools import Bin, Log, Xmx, ToolChecker, VDJtools, Mixcr, Migec
+from lib.pipeline import MiSeqPipe, NextSeqPipe
 
 
 # The script requires R packages: ggplot2, reshape
@@ -88,18 +86,26 @@ def main():
     ini = int(args.n)
     seq_tool = args.t
 
-    tbin = Bin(bin_dir)
+    Bin(bin_dir)
+    Xmx(xmx_size)
     log = Log(log_file)
-    xmx = Xmx(xmx_size)
     if not ini:  # Check and install the missing tools
         print('NOTE: The script requires R packages: ggplot2, reshape. Check whether they are installed.')
-        checker = ToolChecker(tbin)
+        checker = ToolChecker()
         checker.check_tools([VDJtools, Mixcr, Migec])
 
-    pass
+    if seq_tool == 'MiSeq':
+        pipe = MiSeqPipe()
+    elif seq_tool == 'NextSeq':
+        pipe = NextSeqPipe()
 
+    pipe.execute(log)
 
+    print('...done')
+
+# end of main()
 
 
 if __name__ == '__main__':
     main()
+
