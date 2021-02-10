@@ -70,10 +70,10 @@ def main():
                               required=False)
 
     args = input_parser.parse_args()
-    in_dir = re.sub(r'(.)\/$', r'\1', args.i)
-    out_dir = re.sub(r'(.)\/$', r'\1', args.o) if args.o else args.o
+    in_dir = re.sub(r'\/$', '', args.i)
+    out_dir = re.sub(r'\/$', '', args.o) if args.o else args.o
+    bin_dir = re.sub(r'\/$', '', args.b) if args.b else args.b
     xmx_size = args.m
-    bin_path = args.b
     log_file = args.l
     overseq = args.f
     collisions = args.c
@@ -82,12 +82,12 @@ def main():
     port = int(args.p)
     ini = int(args.n)
 
-    bin_dir = Bin(bin_path)
+    tbin = Bin(bin_dir)
     log = Log(log_file)
     xmx = Xmx(xmx_size)
     if not ini:
         print('NOTE: The script requires R packages: ggplot2, reshape. Check whether they are installed.')
-        checker = ToolChecker(bin_dir)
+        checker = ToolChecker(tbin)
         checker.check_tools([VDJtools, Mixcr, Migec])
 
     pass
