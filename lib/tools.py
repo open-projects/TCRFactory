@@ -327,7 +327,7 @@ class Migec(JavaTool):
         return self._assemble_dir
 
     def draw(self):
-        hist = Bin().get('histogram.R')[0]
+        hist = Bin().find('histogram.R')[0]
         cmd = 'cd {}; Rscript {}'.format(self._histogram_dir, hist)
         stream = os.popen(cmd)
         output = stream.read()
@@ -335,7 +335,4 @@ class Migec(JavaTool):
         return output
 
 # end of class Migec
-
-
-
 

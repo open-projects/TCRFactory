@@ -9,7 +9,6 @@ import argparse
 import socket
 
 from lib.inout import Bin, Log, Xmx
-from lib.tools import VDJtools, Mixcr, Migec, GGplot2, Reshape
 from lib.pipeline import MiSeqPipe, NextSeqPipe
 
 
@@ -110,24 +109,21 @@ def main():
     Bin(bin_dir)
     Xmx(xmx_size)
     log = Log(log_file)
-    ggplot = GGplot2()
-    reshape = Reshape()
-    vdjtools = VDJtools(out_dir)
-    mixcr = Mixcr(in_dir, out_dir)
-    migec = Migec(in_dir, out_dir)
-
-    if not ini:  # Check and install the missing tools
-        for obj in (ggplot, reshape, vdjtools, mixcr, migec):
-            obj.check()
 
     pipe = None
     if seq_tool == 'MiSeq':
-        pipe = MiSeqPipe()
+        pipe = MiSeqPipe(in_dir, out_dir)
+        pipe.set_overseq(overseq)
+        pipe.set_collisions(collisions)
     elif seq_tool == 'NextSeq':
-        pipe = NextSeqPipe()
+        pipe = NextSeqPipe(in_dir, out_dir)
 
     if pipe:
+        if not ini:
+            pipe.check()
         pipe.execute(log)
+    else:
+        print('Wrong the pipeline. Aborted.')
 
     print('...done')
 
