@@ -1,73 +1,13 @@
 import os
 import re
 import glob
-import inspect
-import random
-import string
 
 import requests
 import zipfile
 import io
+import subprocess
 
-
-class Bin:
-    def __new__(cls, bin_dir=None):
-        if not hasattr(cls, 'instance'):
-            if bin_dir:
-                cls._bin = re.sub(r'/$', '', bin_dir)
-            else:
-                previous_frame = inspect.currentframe().f_back  # find the caller
-                (filename, line_number, function_name, lines, index) = inspect.getframeinfo(previous_frame)
-                real_path = os.path.dirname(filename)
-                cls._bin = re.sub(r'/$', '', real_path) + '/bin'
-            os.makedirs(cls._bin, exist_ok=True)
-            cls.instance = super(Bin, cls).__new__(cls)
-
-        return cls.instance
-
-    def find(self, file_name):
-        path = self._bin + '/**/' + re.sub(r'^/', '', file_name)
-        glb = glob.glob(path, recursive=True)
-        if len(glb) > 0:
-            return glb[0]
-
-        return None
-
-    def path(self):
-        return self._bin
-
-# end of class Bin (Singleton)
-
-
-class ToolChecker:
-    def __init__(self):
-        self._bin = Bin()
-
-    def check_tools(self, objects):
-        checked = 0
-        for obj in objects:
-            if not obj.name:
-                raise Exception("Can't find the tool name")
-
-            if not self._bin.find(obj.name):
-                tool_dir = '/' + re.sub(r'\.[^.]*$', '', re.sub(r'[^A-Za-z0-9._-]', '', obj.name))
-                if not obj.url:
-                    raise Exception("Can't find the tool URL to install: {}".format(obj.name))
-                print('Installing: {}'.format(obj.url), end=" ")
-
-                r = requests.get(obj.url)
-                z = zipfile.ZipFile(io.BytesIO(r.content))
-                z.extractall(self._bin.path() + tool_dir)
-
-                if self._bin.find(obj.name):
-                    print('...OK')
-                else:
-                    raise Exception("Can't install the tool from: {}".format(obj.url))
-            checked += 1
-
-        return checked
-
-# end of class ToolChecker
+from lib.inout import Bin, Xmx
 
 
 class SampleInfo:
@@ -152,15 +92,80 @@ class Tool:
     name = None
     url = None
 
+    def check(self):
+        if not self.name:
+            raise Exception("Can't check the tool: the tool name is not determined.")
+        raise Exception("Can't check the tool {}: the tool checker is not determined.".format(self.name))
+
 # end of class Tool
 
 
+class RTool(Tool):
+    def check(self):
+        rchk = ['Rscript']
+        chk = ['Rscript', '-e', 'library({})'.format(self.name)]
+        inst = ['Rscript', '-e', 'install.packages("{}", repos="{}")'.format(self.name, self.url)]
+
+        process = subprocess.Popen(rchk, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        if not (re.search(r'Usage:', stdout.decode('utf-8')) or re.search(r'Usage:', stderr.decode('utf-8'))):
+            raise Exception("Rscript doesn't install")
+
+        process = subprocess.Popen(chk, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        if re.search(r'[Ee]rror', stdout.decode('utf-8')) or re.search(r'[Ee]rror', stderr.decode('utf-8')):
+            print('Installing: {} from {}'.format(self.name, self.url), end=" ")
+            subprocess.Popen(inst, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            process = subprocess.Popen(chk, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
+            if re.search(r'[Ee]rror', stdout.decode('utf-8')) or re.search(r'[Ee]rror', stderr.decode('utf-8')):
+                raise Exception("Can't install the tool from: {}".format(self.url))
+            print('...OK')
+
+# end of class RTool
+
+
 class JavaTool(Tool):
-    def __init__(self, path):
-        self._jar = (path.find(self.name) or [None])[0]
+    def __init__(self):
         self._xmx = Xmx().get()
+        self._bin = Bin()
+        self._jar = (self._bin.find(self.name) or [None])[0]
+
+    def check(self):
+        if not self.name:
+            raise Exception("Can't check the tool: the tool name is not determined.")
+
+        if not self._bin.find(self.name):
+            tool_dir = '/' + re.sub(r'\.[^.]*$', '', re.sub(r'[^A-Za-z0-9._-]', '', self.name))
+            if not self.url:
+                raise Exception("Can't find the tool URL to install: {}".format(self.name))
+            print('Installing: {}'.format(self.url), end=" ")
+
+            r = requests.get(self.url)
+            z = zipfile.ZipFile(io.BytesIO(r.content))
+            z.extractall(self._bin.path() + tool_dir)
+
+            if self._bin.find(self.name):
+                print('...OK')
+            else:
+                raise Exception("Can't install the tool from: {}".format(self.url))
 
 # end of class JavaTool
+
+
+class GGplot2(RTool):
+    name = 'ggplot2'
+    url = 'https://cran.rstudio.com'
+
+# end of class GGplot2
+
+
+class Reshape(RTool):
+    name = 'reshape'
+    url = 'https://cran.rstudio.com'
+
+# end of class Reshape
 
 
 class VDJtools(JavaTool):
@@ -250,9 +255,9 @@ class Migec(JavaTool):
         self._checkout_dir = self._outdir + '/checkout'
         self._histogram_dir = self._outdir + '/histogram'
         self._assemble_dir = self._outdir + '/assemble'
-        self._barcodes_file = self._inspector()
+        self._barcodes_file = None
 
-    def _inspector(self):
+    def attach_sample_info(self):
         info = SampleInfo()
         if not info.find(self._indir):
             raise Exception('No SampleInfo file in the directory: {}'.format(self._indir))
@@ -282,9 +287,14 @@ class Migec(JavaTool):
         except IOError:
             print("Can't create barcode file: {}".format(barcodes_file))
 
-        return barcodes_file
+        self._barcodes_file = barcodes_file
+
+        return self._barcodes_file
 
     def checkout_batch(self):
+        if not self._barcodes_file:
+            raise Exception('Migec CheckoutBatch: no barcodes file.')
+
         cmd = 'java ' + self._xmx + ' -jar ' + self._jar
         cmd += ' CheckoutBatch -cute {} {}'.format(self._barcodes_file, self._checkout_dir)
         stream = os.popen(cmd)
@@ -328,36 +338,4 @@ class Migec(JavaTool):
 
 
 
-class Xmx:
-    def __new__(cls, mem='8G'):
-        if not re.search(r'^\d+[GM]$', mem):
-            raise Exception("Wrong value of memory usage limit: {} (default value is '8G')".format(mem))
-        if not hasattr(cls, 'instance'):
-            cls._mem = mem
-            cls.instance = super(Xmx, cls).__new__(cls)
-
-        return cls.instance
-
-    def get(self):
-        xmx = '-Xmx' + self._mem
-
-        return xmx
-
-# end of class Xmx (Singleton)
-
-
-class Log:
-    def __init__(self, log_file=None):
-        self._file_name = log_file
-        self._log = ''
-
-    def add(self, string):
-        self._log += string if re.search(r'\n$', string) else string + "\n"
-
-    def write(self):
-        if self._file_name:
-            with open(self._file_name, "w") as lg:
-                lg.write(self._log)
-
-# end of class Log
 

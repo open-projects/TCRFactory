@@ -6,8 +6,10 @@
 
 import re
 import argparse
+import socket
 
-from lib.tools import Bin, Log, Xmx, ToolChecker, VDJtools, Mixcr, Migec
+from lib.inout import Bin, Log, Xmx
+from lib.tools import VDJtools, Mixcr, Migec, GGplot2, Reshape
 from lib.pipeline import MiSeqPipe, NextSeqPipe
 
 
@@ -73,9 +75,9 @@ def main():
                               required=False)
 
     args = input_parser.parse_args()
-    in_dir = re.sub(r'\/$', '', args.i)
-    out_dir = re.sub(r'\/$', '', args.o) if args.o else args.o
-    bin_dir = re.sub(r'\/$', '', args.b) if args.b else args.b
+    in_dir = re.sub(r'/$', '', args.i)
+    out_dir = re.sub(r'/$', '', args.o) if args.o else args.o
+    bin_dir = re.sub(r'/$', '', args.b) if args.b else args.b
     xmx_size = args.m
     log_file = args.l
     overseq = args.f
@@ -86,20 +88,46 @@ def main():
     ini = int(args.n)
     seq_tool = args.t
 
+    if port:  # open a socket connection to prevent running multiple instances of the script
+        try:
+            # create a TCP/IP socket
+            my_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            # bind the socket to the port
+            server_address = ('localhost', port)
+            print('starting up on {} port {}'.format(*server_address))
+            my_sock.bind(server_address)
+        except socket.error:
+            exit("can't start: an instance of the script is running or the port is taken\n")
+
+    if not out_dir:
+        out_dir = '/output' if in_dir == '/' else in_dir + '/output'
+    elif out_dir in ('.', '..'):
+        out_dir = out_dir + '/output'
+    elif out_dir == '/':
+        out_dir = '/output'
+
     Bin(bin_dir)
     Xmx(xmx_size)
     log = Log(log_file)
-    if not ini:  # Check and install the missing tools
-        print('NOTE: The script requires R packages: ggplot2, reshape. Check whether they are installed.')
-        checker = ToolChecker()
-        checker.check_tools([VDJtools, Mixcr, Migec])
+    ggplot = GGplot2()
+    reshape = Reshape()
+    vdjtools = VDJtools(out_dir)
+    mixcr = Mixcr(in_dir, out_dir)
+    migec = Migec(in_dir, out_dir)
 
+    if not ini:  # Check and install the missing tools
+        for obj in (ggplot, reshape, vdjtools, mixcr, migec):
+            obj.check()
+
+    pipe = None
     if seq_tool == 'MiSeq':
         pipe = MiSeqPipe()
     elif seq_tool == 'NextSeq':
         pipe = NextSeqPipe()
 
-    pipe.execute(log)
+    if pipe:
+        pipe.execute(log)
 
     print('...done')
 

@@ -1,4 +1,5 @@
-from lib.tools import Bin, Xmx, VDJtools, Mixcr, Migec
+from lib.inout import Bin, Xmx
+from lib.tools import VDJtools, Mixcr, Migec
 
 
 class Pipe:
