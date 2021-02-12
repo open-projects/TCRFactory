@@ -130,7 +130,7 @@ class JavaTool(Tool):
     def __init__(self):
         self._xmx = Xmx().get()
         self._bin = Bin()
-        self._jar = (self._bin.find(self.name) or [None])[0]
+        self._jar = self._bin.find(self.name) or None
 
     def check(self):
         if not self.name:
@@ -152,6 +152,31 @@ class JavaTool(Tool):
                 raise Exception("Can't install the tool from: {}".format(self.url))
 
 # end of class JavaTool
+
+
+class UtilFile(Tool):
+    def __init__(self):
+        self._bin = Bin()
+
+    def check(self):
+        if not self.name:
+            raise Exception("Can't check the tool: the tool name is not determined.")
+
+        if not self._bin.find(self.name):
+            if not self.url:
+                raise Exception("Can't find the tool URL to install: {}".format(self.name))
+            print('Installing: {}'.format(self.url), end=" ")
+
+        file_path = self._bin.path() + '/' + self.name
+        r = requests.get(self.url, allow_redirects=True)
+        open(file_path, 'wb').write(r.content)
+
+        if self._bin.find(self.name):
+            print('...OK')
+        else:
+            raise Exception("Can't install the tool from: {}".format(self.url))
+
+# end of class GitHubFolder
 
 
 class GGplot2(RTool):
@@ -255,9 +280,9 @@ class Migec(JavaTool):
         self._checkout_dir = self._outdir + '/checkout'
         self._histogram_dir = self._outdir + '/histogram'
         self._assemble_dir = self._outdir + '/assemble'
-        self._barcodes_file = None
+        self._barcodes_file = self._inspector()
 
-    def attach_sample_info(self):
+    def _inspector(self):
         info = SampleInfo()
         if not info.find(self._indir):
             raise Exception('No SampleInfo file in the directory: {}'.format(self._indir))
@@ -287,9 +312,7 @@ class Migec(JavaTool):
         except IOError:
             print("Can't create barcode file: {}".format(barcodes_file))
 
-        self._barcodes_file = barcodes_file
-
-        return self._barcodes_file
+        return barcodes_file
 
     def checkout_batch(self):
         if not self._barcodes_file:
@@ -327,7 +350,7 @@ class Migec(JavaTool):
         return self._assemble_dir
 
     def draw(self):
-        hist = Bin().find('histogram.R')[0]
+        hist = Bin().find(MigecHistogram.name)
         cmd = 'cd {}; Rscript {}'.format(self._histogram_dir, hist)
         stream = os.popen(cmd)
         output = stream.read()
@@ -335,4 +358,9 @@ class Migec(JavaTool):
         return output
 
 # end of class Migec
+
+
+class MigecHistogram(UtilFile):
+    name = 'histogram.R'
+    url = 'https://github.com/mikessh/migec/blob/master/util/histogram.R?raw=true'
 

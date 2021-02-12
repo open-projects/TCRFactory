@@ -1,5 +1,5 @@
 from lib.inout import Bin, Xmx
-from lib.tools import VDJtools, Mixcr, Migec
+from lib.tools import VDJtools, Mixcr, Migec, MigecHistogram
 
 
 class Pipe:
@@ -27,6 +27,7 @@ class MiSeqPipe(Pipe):
         self._tools['migec'] = Migec(in_dir, out_dir)
         self._tools['mixcr'] = Mixcr(in_dir, out_dir)
         self._tools['vdjtools'] = VDJtools(out_dir)
+        self._tools['migec_hist'] = MigecHistogram()
         self._overseq = None
         self._collisions = None
 
@@ -53,7 +54,7 @@ class MiSeqPipe(Pipe):
         try:
             log.add('\n====================MIXCR====================\n')
             mixcr = self._tools['mixcr']
-            log.add('>>>Analyze<<<\n' + mixcr.Analyze(migec.get_assemble_dir()))
+            log.add('>>>Analyze<<<\n' + mixcr.analyze(migec.get_assemble_dir()))
         except Exception as error:
             log.add('\nMIXCR error:\n{}'.format(error))
             log.write()
@@ -84,3 +85,13 @@ class NextSeqPipe(Pipe):
 
 # end of class NextSeqPipe
 
+#java -jar -Xmx6G migec-1.2.9.jar CheckoutBatch -cute /storage/genomic_data/GE30/barcodes.txt output
+#java -jar -Xmx6G migec-1.2.9.jar Histogram output histogram
+#java -jar -Xmx6G migec-1.2.9.jar AssembleBatch --force-collision-filter output histogram assemble
+#mkdir alingment
+#java -jar -Xmx6G mixcr.jar align -OreadsLayout=Collinear -s hsa -r alignmentReport.txt assemble/test_sample_R1.t1.cf.fastq assemble/test_sample_R2.t1.cf.fastq alingment/alignments.vdjca
+#mkdir clones
+#java -jar -Xmx6G mixcr.jar assemble -r assembleReport.txt alingment/alignments.vdjca clones/clones.clns
+#java -jar -Xmx6G mixcr.jar exportClones -t -o -c TRB clones/clones.clns clones/clones.txt
+#java -jar -Xmx6G vdjtools-1.2.1.jar Convert -S mixcr clones/clones.txt clones/vdj
+#java -jar -Xmx6G vdjtools-1.2.1.jar FilterNonFunctional clones/vdj.clones.txt clones/nc

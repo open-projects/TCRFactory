@@ -4,9 +4,13 @@
 # D. Malko
 # 2021
 
+import os
 import re
 import argparse
 import socket
+import subprocess
+import shutil
+
 
 from lib.inout import Bin, Log, Xmx
 from lib.pipeline import MiSeqPipe, NextSeqPipe
@@ -124,6 +128,26 @@ def main():
         pipe.execute(log)
     else:
         print('Wrong the pipeline. Aborted.')
+
+    if port:
+        my_sock.close()  # now we are able to run another instance
+
+    if remove_seq:
+        cmd_array = ['find', out_dir, '-name', '*.gz', '-delete']
+        subprocess.run(cmd_array)
+
+    if compressed:
+        if os.path.exists(compressed):
+            os.remove(compressed)
+        cmd_array = ['tar', '-zcf', compressed, '-C', out_dir, '.']
+        subprocess.run(cmd_array)
+
+        try:
+            shutil.rmtree(out_dir)
+        except Exception as error:
+            log.add('\nFile cleanup error:\n{}'.format(error))
+            log.write()
+            exit('...error')
 
     print('...done')
 
