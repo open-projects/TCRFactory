@@ -130,6 +130,9 @@ class JavaTool(Tool):
     def __init__(self):
         self._xmx = Xmx().get()
         self._bin = Bin()
+        self._assign_tool()
+
+    def _assign_tool(self):
         self._jar = self._bin.find(self.name) or None
 
     def check(self):
@@ -145,8 +148,9 @@ class JavaTool(Tool):
             r = requests.get(self.url)
             z = zipfile.ZipFile(io.BytesIO(r.content))
             z.extractall(self._bin.path() + tool_dir)
+            self._assign_tool()
 
-            if self._bin.find(self.name):
+            if self._jar:
                 print('...OK')
             else:
                 raise Exception("Can't install the tool from: {}".format(self.url))
@@ -169,7 +173,9 @@ class UtilFile(Tool):
 
         file_path = self._bin.path() + '/' + self.name
         r = requests.get(self.url, allow_redirects=True)
-        open(file_path, 'wb').write(r.content)
+        with open(file_path, 'wb') as f:
+            f.write(r.content)
+
 
         if self._bin.find(self.name):
             print('...OK')
