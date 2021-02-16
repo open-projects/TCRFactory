@@ -91,6 +91,7 @@ def main():
     ini = int(args.n)
     seq_tool = args.t
 
+    my_sock = None
     if port:  # open a socket connection to prevent running multiple instances of the script
         try:
             # create a TCP/IP socket
@@ -129,7 +130,7 @@ def main():
     else:
         print('Wrong the pipeline. Aborted.')
 
-    if port:
+    if my_sock:
         my_sock.close()  # now we are able to run another instance
 
     if remove_seq:
@@ -156,4 +157,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
