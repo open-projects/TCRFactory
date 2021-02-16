@@ -77,7 +77,7 @@ class MiSeqPipe(Pipe):
 
 
 class NextSeqPipe(Pipe):
-    def __init__(self):
+    def __init__(self, in_dir, out_dir):
         ...
 
     def execute(self, log):
