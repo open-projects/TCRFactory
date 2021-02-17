@@ -122,6 +122,8 @@ def main():
         pipe.set_collisions(collisions)
     elif seq_tool == 'NextSeq':
         pipe = NextSeqPipe(in_dir, out_dir)
+        pipe.set_overseq(overseq)
+        pipe.set_collisions(collisions)
 
     if pipe:
         if not ini:

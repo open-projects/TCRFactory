@@ -11,7 +11,7 @@ from lib.inout import Bin, Xmx
 
 
 class SampleInfo:
-    class Info:
+    class Record:
         def __init__(self):
             self.sample_name = None
             self.chain = None
@@ -39,7 +39,7 @@ class SampleInfo:
                 return True
             return False
 
-    # end of class Info()
+    # end of class Record
 
     def __init__(self, file_name=None):
         self._file = file_name
@@ -71,14 +71,16 @@ class SampleInfo:
         n_samples = 0
         with open(self._file, 'r') as file:
             for line in file:
-                if re.search(r'\sR1\s+R2\s', line):
-                    continue  # skip the file header
+                line = line.strip()
+                if len(line) > 0:
+                    if re.search(r'\sR1\s+R2\s', line):
+                        continue  # skip the file header
 
-                inf = self.Info()
-                if not inf.set(line):
-                    raise Exception("Wrong record in SampleInfo file: {}\nline:{}".format(self._file, line))
-                self._records.append(inf)
-                n_samples += 1
+                    inf = self.Record()
+                    if not inf.set(line):
+                        raise Exception("Wrong record in SampleInfo file: {}\nline:{}".format(self._file, line))
+                    self._records.append(inf)
+                    n_samples += 1
 
         if n_samples == 0:
             raise Exception("Wrong format of SampleInfo file (no any samples): {}".format(self._file))
@@ -244,9 +246,11 @@ class Mixcr(JavaTool):
         self._indir = re.sub(r'/$', '', indir)
         self._outdir = re.sub(r'/$', '', outdir)
         self._analyze_dir = self._outdir + '/analyze'
+        self._alignment_dir = self._outdir + '/alignment'
+        self._clones_dir = self._outdir + '/clones'
 
-    def analyze(self, assemble_dir):
-        assemble_dir = re.sub(r'/$', '', assemble_dir)
+    def analyze(self, in_dir):
+        in_dir = re.sub(r'/$', '', in_dir)
         info = SampleInfo()
         if not info.find(self._indir):
             raise Exception('No SampleInfo file in the directory: {}'.format(self._indir))
@@ -260,16 +264,79 @@ class Mixcr(JavaTool):
             cmd += '--5-end no-v-primers --3-end c-primers --adapters no-adapters --receptor-type {}'.format(
                 record.chain
             )
-            cmd += ' {}/{}_R1.*.fastq.gz'.format(assemble_dir, record.sample_name)
-            cmd += ' {}/{}_R2.*.fastq.gz'.format(assemble_dir, record.sample_name)
+            cmd += ' {}/{}_R1.*.fastq.gz'.format(in_dir, record.sample_name)
+            cmd += ' {}/{}_R2.*.fastq.gz'.format(in_dir, record.sample_name)
             cmd += ' {}/{}'.format(self._analyze_dir, record.sample_name)
             stream = os.popen(cmd)
             output += '>>>{}<<<\n'.format(record.sample_name) + stream.read()
 
         return output
 
-    def get_analize_dir(self):
+    def align(self, in_dir):
+        in_dir = re.sub(r'/$', '', in_dir)
+        info = SampleInfo()
+        if not info.find(self._indir):
+            raise Exception('No SampleInfo file in the directory: {}'.format(self._indir))
+
+        os.makedirs(self._alignment_dir, exist_ok=True)
+
+        output = ''
+        for record in info.parse():
+            cmd = 'java ' + self._xmx + ' -jar ' + self._jar
+            cmd += ' align -OreadsLayout=Collinear -s hsa'  # Collinear - relative orientation of paired reads
+            cmd += ' -r {}/alignmentReport.txt '.format(self._alignment_dir)
+            cmd += ' {}/{}_R1.*.fastq.gz'.format(in_dir, record.sample_name)
+            cmd += ' {}/{}_R2.*.fastq.gz'.format(in_dir, record.sample_name)
+            cmd += ' {}/{}_alignments.vdjca'.format(self._alignment_dir, record.sample_name)
+            stream = os.popen(cmd)
+            output += '>>>{}<<<\n'.format(record.sample_name) + stream.read()
+
+        return output
+
+    def assemble(self, in_dir):
+        in_dir = re.sub(r'/$', '', in_dir)
+        info = SampleInfo()
+        if not info.find(self._indir):
+            raise Exception('No SampleInfo file in the directory: {}'.format(self._indir))
+
+        os.makedirs(self._clones_dir, exist_ok=True)
+
+        output = ''
+        for record in info.parse():
+            cmd = 'java ' + self._xmx + ' -jar ' + self._jar
+            cmd += ' assemble -r {}/assembleReport.txt '.format(self._clones_dir)
+            cmd += ' {}/{}_alignments.vdjca'.format(in_dir, record.sample_name)
+            cmd += ' {}/{}_clonotypes.clns'.format(self._clones_dir, record.sample_name)
+            stream = os.popen(cmd)
+            output += '>>>{}<<<\n'.format(record.sample_name) + stream.read()
+
+        return output
+
+    def export(self, in_dir):
+        in_dir = re.sub(r'/$', '', in_dir)
+        info = SampleInfo()
+        if not info.find(self._indir):
+            raise Exception('No SampleInfo file in the directory: {}'.format(self._indir))
+
+        output = ''
+        for record in info.parse():
+            cmd = 'java ' + self._xmx + ' -jar ' + self._jar
+            cmd += ' exportClones -t -o -c {}'.format(record.chain)
+            cmd += ' {}/{}_clonotypes.clns'.format(self._clones_dir, record.sample_name)
+            cmd += ' {}/{}_clonotypes.txt'.format(self._clones_dir, record.sample_name)
+            stream = os.popen(cmd)
+            output += '>>>{}<<<\n'.format(record.sample_name) + stream.read()
+
+        return output
+
+    def get_analyze_dir(self):
         return self._analyze_dir
+
+    def get_alignment_dir(self):
+        return self._alignment_dir
+
+    def get_clones_dir(self):
+        return self._clones_dir
 
 # end of class Mixcr
 
