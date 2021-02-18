@@ -1,5 +1,8 @@
+# TCR-Factory: a Web Application for TCR Repertoire Sequencing.
+# D. Malko
+# 2021
+
 import re
-from django.db import models
 from django.template.loader import render_to_string
 from sample.models import Sample
 

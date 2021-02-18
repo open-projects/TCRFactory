@@ -1,13 +1,19 @@
+/* TCR-Factory: a Web Application for TCR Repertoire Sequencing. */
+/* D. Malko                                                      */
+/* 2021                                                          */
+
 html {
   position: relative;
   min-height: 100%;
 }
+
 body {
   /* Padding top by menu height */
   padding-top: 56px;
   /* Margin bottom by footer height */
   margin-bottom: 60px;
 }
+
 footer {
   position: absolute;
   bottom: 0;

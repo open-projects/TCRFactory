@@ -1,6 +1,6 @@
-'''
-TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
-'''
+# TCR-Factory: a Web Application for TCR Repertoire Sequencing.
+# D. Malko
+# 2021
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse

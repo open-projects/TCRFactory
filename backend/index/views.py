@@ -1,10 +1,8 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.http import Http404
-from django.template import loader
+# TCR-Factory: a Web Application for TCR Repertoire Sequencing.
+# D. Malko
+# 2021
 
-import re
-from datetime import datetime
+from django.shortcuts import render
 
 
 def index(request):

@@ -1,9 +1,11 @@
-import os
-from django.shortcuts import render, redirect
+# TCR-Factory: a Web Application for TCR Repertoire Sequencing.
+# D. Malko
+# 2021
+
+from django.shortcuts import redirect
 from django.http import JsonResponse
 from django.views import View
 from django import forms
-from django.conf import settings
 
 from .models import File, cleanup
 

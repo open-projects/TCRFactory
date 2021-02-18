@@ -1,6 +1,7 @@
-"""
-TCRpiper - a pipeline for TCR sequence treatment. Copyright (C) 2020  D. Malko
-"""
+# TCR-Factory: a Web Application for TCR Repertoire Sequencing.
+# D. Malko
+# 2021
+
 from django.contrib import admin
 from django.urls import include, path, re_path
 from django.conf import settings
@@ -17,7 +18,6 @@ urlpatterns = [
     path(r'filestorage/', include('filestorage.urls')),
     path(r'pipeline/', include('pipeline.urls')),
     path(r'accounts/', include('accounts.urls')),
-    #re_path(r'^$', include('tcrpiper.urls')),
 ]
 
 if settings.DEBUG:
