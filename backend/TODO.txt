@@ -1,0 +1,21 @@
+1) add a number of total reads in an experiment (it should depend on a type of using kits)
++ a number of reserved reads for each sample
++ a number of `free` reads in the experiment
+
+2) User ?
+
+3) Dropdown for a project name in the new sample section (maybe create a new section for projects with projects names)
+
+
+################
+add button "reopen experiment"
+
+uniq experiment_id + index
+
+
+################
+Sign In/Out
+look at:
+https://levelup.gitconnected.com/how-to-implement-login-logout-and-registration-with-djangos-user-model-59442164db73
+
+https://simpleisbetterthancomplex.com/tutorial/2017/02/18/how-to-create-user-sign-up-view.html

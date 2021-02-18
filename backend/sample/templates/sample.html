@@ -1,0 +1,382 @@
+<!--
+TCRpiper - a pipeline for TCR sequence treatment. Copyright (C) 2020  D. Malko
+-->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>TCRpiper</title>
+  <link rel="shortcut icon" href="{% static "favicon.ico" %}" />
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static "css/main.css" %}" rel="stylesheet">
+  <link href="{% static "css/sample.css" %}" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'index:index' %}">TCRpiper</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'experiment:experiment_stock' %}">Experiments</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'primers:index' %}">Primers</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Log Out</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mb-5"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mb-5">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title">
+              <p class="text-primary">
+                {% if sample_id %}
+                  Sample #{{ sample_id }}
+                {% else %}
+                  New Sample
+                {% endif %}
+              </p>
+            </h2>
+            <hr class="my-3">
+            <h4 class="text-secondary">Experiment #{{ experiment_id }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Centered Row -->
+    <div class="row">
+      <div class="col-md-12 mb-5">
+        <div class="card h-100">
+          <form action="{% url 'sample:sample_set' experiment_id sample_id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="sample_id" id="sample_id" value="{{ sample_id }}">
+            <input type="hidden" name="experiment_id" id="experiment_id" value="{{ experiment_id }}">
+            <div class="card-header">Sample configuration</div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label for="sample_project">Project name <span class="required">*</span></label>
+                <input type="text" class="form-control" name="sample_project" id="sample_project" placeholder="My project  ( allowed symbols: [A-Z_0-9+-] )" value="{{ sample_project }}" required>
+                <div class="invalid-feedback">
+                  Please enter a valid sample name.
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="sample_ident">Sample ID <span class="required">*</span></label>
+                  <input type="text" class="form-control" name="sample_ident" id="sample_ident" placeholder="Identificator ( allowed symbols: [A-Z_0-9+-] )" value="{{ sample_ident }}"  maxlength="24" required>
+                  <div class="invalid-feedback">
+                    Please enter a valid sample ID.
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="sample_name">Sample name</label>
+                  <input type="text" class="form-control" name="sample_name" id="sample_name" placeholder="Name" value="{{ sample_name }}" readonly>
+                  <div class="invalid-feedback">
+                    Valid Sample name is required.
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="sample_plate">Sample plate</label>
+                  <input type="text" class="form-control" name="sample_plate" id="sample_plate" placeholder="Plate" value="{{ sample_plate }}" readonly>
+                  <div class="invalid-feedback">
+                    Please enter a valid sample ID.
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="sample_well">Sample well</label>
+                  <input type="text" class="form-control" name="sample_well" id="sample_well" placeholder="Well" value="{{ sample_well }}" readonly>
+                  <div class="invalid-feedback">
+                    Valid Sample name is required.
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="cell_number">Number of cells</label>
+                  <input type="text" class="form-control" name="cell_number" id="cell_number" placeholder="0" value="{{ cell_number }}">
+                  <div class="invalid-feedback">
+                    Please enter a valid number of cells.
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="read_number">Number of expected reads <span class="required">*</span></label>
+                  <input type="text" class="form-control" name="read_number" id="read_number" placeholder="0" value="{{ read_number }}" required>
+                  <div class="invalid-feedback">
+                    Please enter a valid number of expected reads.
+                  </div>
+                </div>
+              </div>
+              <div class="card h-100 mb-3">
+                <div class="card-body bg-light">
+                  <div class="row">
+                    <div class="col-md-12 mb-3">
+                      <div class="card h-100">
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <div class="dropdown-with-input">
+                                <label for="smart_name">
+                                  <div class="dropdown show">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" id="dropdownSmart" aria-haspopup="true" aria-expanded="false">Smart <span class="required">*</span></a>
+                                    <div class="dropdown-menu myDropDown" aria-labelledby="dropdownSmart">
+                                      <!-- drop down -->
+                                      <table class="table table-borderless table-sm">
+                                        <tbody>
+                                          {% for smart in smart_list %}
+                                            <tr class="dropdown-item" name="{{ smart.name }}" id="smartCheck{{ smart.id }}">
+                                              {% if smart.seqcore in used_barcodes.smarts %}
+                                                <th scope="row" class="smartid used_barcode">{{ smart.name }}</th>
+                                                <td class="smartseq used_barcode">{{ smart.seqcore }}</td>
+                                              {% else %}
+                                                <th scope="row" class="smartid">{{ smart.name }}</th>
+                                                <td class="smartseq">{{ smart.seqcore }}</td>
+                                              {% endif %}
+                                            </tr>
+                                          {% endfor %}
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </label>
+                                <input type="text" class="form-control" name="smart_name" id="smart_name" placeholder="smart name" value="{{ smart_name }}" required onkeydown="return false">
+                                <div class="invalid-feedback">
+                                  Please enter a valid smart.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <label for="smart_benchling">1st PCR Benchling ID</label>
+                              <input type="text" class="form-control" name="smart_benchling" id="smart_benchling" placeholder="Identificator ( allowed symbols: [A-Z_0-9+-] )" value="{{ smart_benchling }}">
+                              <div class="invalid-feedback">
+                                Please enter a valid Benchling ID.
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Alfa-Beta Row -->
+                  <div class="row">
+                    <!-- Alfa -->
+                    <div class="col-md-6 mb-3">
+                      <div class="card h-100">
+                        <div class="card-body">
+                          <h3 class="card-title">Alfa</h3>
+                          <div class="mb-3">
+                            <label for="alfa_subsample_ident">Subsample ID</label>
+                            <input type="text" class="form-control" name="alfa_subsample_ident" id="alfa_subsample_ident" placeholder="alfa" value="{{ alfa_subsample_ident }}">
+                            <div class="invalid-feedback">
+                              Please enter a valid sample ID.
+                            </div>
+                          </div>
+                          <div class="dropdown-with-input mb-3">
+                            <label for="alfa_index_name">
+                              <div class="dropdown show">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" id="dropdownAlfaIndex" aria-haspopup="true" aria-expanded="false">Index <span class="attention">*</span></a>
+                                <div class="dropdown-menu myDropDown" aria-labelledby="dropdownAlfaIndex">
+                                  <!-- drop down -->
+                                  <table class="table table-borderless table-sm">
+                                    <tbody>
+                                      {% for index in alfa_index_list %}
+                                        <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="alfaIndex{{ index.id }}">
+                                          {% if index.seqcore in used_barcodes.indexes %}
+                                            <th scope="row" class="alfaindexid used_barcode">{{ index.name }}</th>
+                                            <td class="alfaindexseq used_barcode">{{ index.seqcore }}</td>
+                                          {% else %}
+                                            <th scope="row" class="alfaindexid">{{ index.name }}</th>
+                                            <td class="alfaindexseq">{{ index.seqcore }}</td>
+                                          {% endif %}
+                                        </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </label>
+                            <input type="text" class="form-control alfa_beta_index" name="alfa_index_name" data-dropdown="" id="alfa_index_name" placeholder="index name" value="{{ alfa_index_name }}" onkeydown="return false">
+                            <div class="invalid-feedback">
+                              Please enter a valid index.
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label for="alfa_index_benchling">2nd PCR Benchling ID</label>
+                            <input type="text" class="form-control" name="alfa_index_benchling" id="alfa_index_benchling" placeholder="Identificator ( allowed symbols: [A-Z_0-9+-] )" value="{{ alfa_index_benchling }}">
+                            <div class="invalid-feedback">
+                              Please enter a valid Benchling ID.
+                            </div>
+                          </div>
+                        </div>
+                        <!-- /.card-body -->
+                      </div>
+                    </div>
+                    <!-- /.col-md-6 -->
+
+                    <!-- Beta -->
+                    <div class="col-md-6 mb-3">
+                      <div class="card h-100">
+                        <div class="card-body">
+                          <h3 class="card-title">Beta</h3>
+                          <div class="mb-3">
+                            <label for="beta_subsample_ident">Subsample ID</label>
+                            <input type="text" class="form-control" name="beta_subsample_ident" id="beta_subsample_ident" placeholder="beta" value="{{ beta_subsample_ident }}">
+                            <div class="invalid-feedback">
+                              Please enter a valid Benchling ID.
+                            </div>
+                          </div>
+                          <div class="dropdown-with-input mb-3">
+                            <label for="beta_index_name">
+                              <div class="dropdown show">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" id="dropdownBetaIndex" aria-haspopup="true" aria-expanded="false">Index <span class="attention">*</span></a>
+                                <div class="dropdown-menu myDropDown" aria-labelledby="dropdownBetaIndex">
+                                  <!-- drop down -->
+                                  <table class="table table-borderless table-sm">
+                                    <tbody>
+                                      {% for index in beta_index_list %}
+                                        <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="betaIndex{{ index.id }}">
+                                          {% if index.seqcore in used_barcodes.indexes %}
+                                            <th scope="row" class="betaindexid used_barcode">{{ index.name }}</th>
+                                            <td class="betaindexseq used_barcode">{{ index.seqcore }}</td>
+                                          {% else %}
+                                            <th scope="row" class="betaindexid">{{ index.name }}</th>
+                                            <td class="betaindexseq">{{ index.seqcore }}</td>
+                                          {% endif %}
+                                        </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </label>
+                            <input type="text" class="form-control alfa_beta_index" name="beta_index_name" data-dropdown="" id="beta_index_name" placeholder="index name" value="{{ beta_index_name }}" onkeydown="return false">
+                            <div class="invalid-feedback">
+                              Please enter a valid index.
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label for="beta_index_benchling">2nd PCR Benchling ID</label>
+                            <input type="text" class="form-control" name="beta_index_benchling" id="beta_index_benchling" placeholder="Identificator ( allowed symbols: [A-Z_0-9+-] )" value="{{ beta_index_benchling }}">
+                            <div class="invalid-feedback">
+                              Please enter a valid Benchling ID.
+                            </div>
+                          </div>
+                        </div>
+                        <!-- /.card-body -->
+                      </div>
+                    </div>
+                    <!-- /.col-md-6 -->
+                  </div>
+                  <!-- /.row -->
+
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <table class="table table-hover collapse" id="ids">
+                        <thead>
+                          <tr>
+                            <th scope="col">Sample ID</th>
+                            <th scope="col">Smart ID</th>
+                            <th scope="col">Alfa Index ID</th>
+                            <th scope="col">Beta Index ID</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for bcode in used_barcodes.barcodes %}
+                            <tr>
+                              <th scope="row" class="sampleident">{{ bcode.sample_ident }}</th>
+                              <td><span class="smartid">{{ bcode.smart_name }}</span></td>
+                              <td><span class="alfaindexid">{% if bcode.alfa_index_name %}{{ bcode.alfa_index_name }}{% else %} --- {% endif %}</span></td>
+                              <td><span class="betaindexid">{% if bcode.beta_index_name %}{{ bcode.beta_index_name }}{% else %} --- {% endif %}</span></td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                      <div class="float-right">
+                        <button type="button" class="btn btn-primary hidden" data-toggle="collapse" data-target="#ids">Show/Hide used primers</button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.card -->
+                </div>
+              </div>
+              <div class="mb-5">
+                <label for="comments">Comments</label>
+                <input type="text" class="form-control" name="comments" id="comments" placeholder="My comments" value="{{ comments }}">
+                <div class="invalid-feedback">
+                  Please enter comments in valid format.
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              {% if experiment_id and experiment_status == 'open' and sample_id != 0 %}
+                <a class="btn btn-danger" id="deleteExperiment" href="{% url 'sample:sample_del' experiment_id sample_id %}">Delete</a>
+              {% endif %}
+              <button type="button" class="btn invisible">placeholder</button>
+              <div class="float-right">
+                <a class="btn btn-outline-dark" href="{% url 'experiment:experiment_get' experiment_id %}">Cancel</a>
+                {% if experiment_id and experiment_status == 'open' %}
+                  <button type="submit" class="btn btn-success">Submit</button>
+                {% endif %}
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p class="text-center text-white">TCRpiper 2020</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static "vendor/jquery/jquery.min.js" %}"></script>
+  <script src="{% static "vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+  <script src="{% static "js/sample.js" %}"></script>
+  <script src="{% static "js/main.js" %}"></script>
+
+</body>
+
+</html>

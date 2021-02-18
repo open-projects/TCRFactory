@@ -1,0 +1,170 @@
+<!--
+TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
+-->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>TCRpiper</title>
+  <link rel="shortcut icon" href="{% static "favicon.ico" %}" />
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static "css/main.css" %}" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">TCRpiper</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contacts</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container">
+    <div class="row align-items-top my-5">
+      <!-- Main Picture -->
+      <div class="col-lg-7">
+        <img class="img-fluid rounded mb-4 mb-lg-0" src="{% static "pic/TCR-complex.png" %}" alt="">
+      </div>
+
+      <!-- Sign In/Up Forms -->
+      <div class="col-lg-5">
+        <div class="container">
+          <nav>
+            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+              <a class="nav-item nav-link" id="nav-sign-up-tab" data-toggle="tab" href="#nav-sign-up" role="tab" aria-controls="nav-sign-up" aria-selected="false">Sign Up</a>
+              <a class="nav-item nav-link active" id="nav-sign-in-tab" data-toggle="tab" href="#nav-sign-in" role="tab" aria-controls="nav-sign-in" aria-selected="true">Sign In</a>
+            </div>
+          </nav>
+          <div class="tab-content" id="nav-tabContent">
+
+            <!-- Sign Up Form -->
+            <div class="tab-pane fade" id="nav-sign-up" role="tabpanel" aria-labelledby="nav-sign-up-tab">
+              <form action="{% url 'accounts:sign_up' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-md-12 mb-3">
+                    <label for="new_user">User name</label>
+                    <input type="text" class="form-control" name="username" id="new_user" maxlength="150" required placeholder="">
+                    <div class="invalid-feedback">
+                      Valid user name is required.
+                    </div>
+                  </div>
+                  <div class="col-md-12 mb-3">
+                    <label for="email">E-mail</label>
+                    <input type="text" class="form-control" name="email" id="email" required placeholder="">
+                    <div class="invalid-feedback">
+                      Valid e-mail is required.
+                    </div>
+                  </div>
+                  <div class="col-md-12 mb-3">
+                    <label for="password1">Password</label>
+                    <input type="password" class="form-control" name="password1" id="password1" required placeholder="">
+                    <div class="invalid-feedback">
+                      Valid password is required.
+                    </div>
+                  </div>
+                  <div class="col-md-12 mb-4">
+                    <label for="password2">Retype Password</label>
+                    <input type="password" class="form-control" name="password2" id="password2" required placeholder="">
+                    <div class="invalid-feedback">
+                      Valid matched passwords are required.
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="float-right">
+                      <button type="submit" class="btn btn-success">Sign Up</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- /.tab-pane (Sign Up Form) -->
+
+            <!-- Sign In Form -->
+            <div class="tab-pane fade show active" id="nav-sign-in" role="tabpanel" aria-labelledby="nav-sign-in-tab">
+              <form action="{% url 'accounts:sign_in' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-md-12 mb-3">
+                    <label for="user">User name</label>
+                    <input type="text" class="form-control" name="username" id="user" autofocus required placeholder="">
+                    <div class="invalid-feedback">
+                      Valid user name is required.
+                    </div>
+                  </div>
+                  <div class="col-md-12 mb-4">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" required placeholder="">
+                    <div class="invalid-feedback">
+                      Valid user name is required.
+                    </div>
+                  </div>
+
+                  <div class="col-md-12">
+                    <div class="float-right">
+                      <button type="submit" class="btn btn-success">Sign In</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- /.tab-pane (Sign In Form) -->
+          </div>
+          <!-- /.tab-content -->
+        </div>
+        <!-- /.conteiner -->
+      </div>
+
+      <h1 class="font-weight-light">TCRpiper</h1>
+      <p>This is a test version of TCRpiper, a web-based application for analysis of T-cell receptor repertoires.
+        It doesn't have too much fancy flare to it, but it makes a great use of the standard programs for TCR sequencing data generated on Illumina instruments.
+        Feel free to use this application for your project! (LogIn: test, Password: TCRpiper_2020)</p>
+
+    </div>
+  </div>
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; TCRpiper 2020</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static "vendor/jquery/jquery.min.js" %}"></script>
+  <script src="{% static "vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,208 @@
+<!--
+TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
+-->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>TCRpiper</title>
+  <link rel="shortcut icon" href="{% static "favicon.ico" %}" />
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static "css/main.css" %}" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'index:index' %}">TCRpiper</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'experiment:experiment_stock' %}">Experiments</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'primers:index' %}">Primers</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Log Out</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mb-5"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mb-5">
+        <div class="card">
+          <div class="card-body">
+           <h2 class="card-title">
+             <p class="text-primary">
+               {% if experiment_id %}
+                 Experiment #{{ experiment_id }}
+               {% else %}
+                 New Experiment
+               {% endif %}
+             </p>
+           </h2>
+           <hr class="my-3">
+           <h4 class="text-secondary">{{ num_of_samples }} sample(s) in the experiment</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mb-5">
+        <div class="card h-100">
+          <div class="card-body">
+            <!-- Settings -->
+            <div class="row">
+              <div class="col-md-12 mb-5">
+                <div class="card h-100">
+                  <div class="card-header">Settings</div>
+                  <div class="card-body">
+                    {% for setting in settings %}
+                      <div class="col-md-12 mb-1">
+                          <span class="font-weight-bold">{{ setting.0 }}: </span><span>{{ setting.1 }}</span>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- List of Samples -->
+            {% if experiment_id %}
+              <div class="row">
+                <div class="col-md-12 mb-5">
+                  <div class="card h-100">
+                    <div class="card-header">List of samples</div>
+                    <div class="card-body scroll">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Sample ID</th>
+                            <th scope="col">Owner</th>
+                            <th scope="col">Created</th>
+                            <th scope="col">Comments</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for sample in sample_list %}
+                            <tr>
+                              <td scope="row">{{ sample.id }}</td>
+                              <td>{{ sample.ident }}</td>
+                              <td>{{ sample.owner }}</td>
+                              <td>{{ sample.date }}</td>
+                              <td>{{ sample.comments }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            {% if experiment_id %}
+              <!-- List of Files -->
+              <div class="row">
+                <div class="col-md-12 mb-5">
+                  <div class="card h-100">
+                    <div class="card-header">List of instrument output files</div>
+                    <div class="card-body">
+                      {% include "filestorage.html" %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- List of Options -->
+              <div class="row in-stock-unhide {% if num_of_files == 0 %}d-none{% endif %}">
+                <div class="col-md-12 mb-5">
+                  <div class="card h-100">
+                    <div class="card-header">List of pipeline options</div>
+                    <div class="card-body">
+                      <form action="{% url 'pipeline:pipeline_get' experiment_id %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group mb-4">
+                          <div class="custom-control custom-checkbox mb-2">
+                            <input type="checkbox" class="custom-control-input" name="overseqThreshold" id="overseqThreshold">
+                            <label class="custom-control-label" for="overseqThreshold">Overseq threshold</label>
+                          </div>
+                          <input type="number" class="form-control col-md-2" placeholder="0" min="0" name="overseqThresholdValue" id="overseqThresholdValue" value="0">
+                        </div>
+                        <div class="custom-control custom-checkbox mb-4">
+                          <input type="checkbox" class="custom-control-input" name="collisionFilter" id="collisionFilter">
+                          <label class="custom-control-label" for="collisionFilter">Force collision filter</label>
+                        </div>
+                        <div class="custom-control custom-checkbox mb-4">
+                          <input type="checkbox" class="custom-control-input" name="rmSequences" id="rmSequences" checked="checked">
+                          <label class="custom-control-label" for="rmSequences">Remove filtered sequences</label>
+                        </div>
+                        <div class="float-right in-stock-visible {% if num_of_files > 0 %}visible{% else %}invisible{% endif %}">
+                          <button type="submit" class="btn btn-success">Execute</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+          <div class="card-footer">
+            <span class="float-right">
+              <a class="btn btn-outline-dark" href="{% url 'experiment:experiment_stock' %}">Cancel</a>
+            </span>
+            <a class="btn" href="{% url 'experiment:experiment_open' experiment_id %}">Re-open</a>
+            <a class="btn btn-secondary" href="{% url 'experiment:experiment_arch' experiment_id %}">Archive</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p class="text-center text-white">TCRpiper 2020</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static "vendor/jquery/jquery.min.js" %}"></script>
+  <script src="{% static "vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+  <script src="{% static "js/main.js" %}"></script>
+
+  <!-- file upload plugins -->
+  {% include "filestorage_scripts.html" %}
+
+</body>
+
+</html>

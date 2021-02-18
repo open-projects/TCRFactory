@@ -1,0 +1,76 @@
+{% load static %}
+  <table id="file_list" class="table">
+    <thead>
+      <tr>
+        <th>
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-2">
+                File(s)
+              </div>
+              <div class="col-sm my-auto">
+                <div class="progress" style="display: none;" id="upload_progressbar">
+                  <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%;">0%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in file_list %}
+        <tr>
+          <td><a href="{{ item.file.url }}">{{ item.file.name }}</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="raw" style="margin-bottom: 20px;">
+    <div class="float-right">
+      <button type="button" class="btn btn-primary file-upload">
+        Upload files
+      </button>
+      <input id="file_upload" type="file" name="file"
+             multiple
+             style="display: none;"
+             data-url="{% url 'filestorage:data_upload' %}"
+             data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}", "experiment_id": "{{ experiment_id}}"}'
+      >
+    </div>
+    <div class={% if num_of_files > 0 %}"visible"{% else %}"invisible"{% endif %} id="clean_up">
+      <form method="post" action="{% url 'filestorage:data_cleanup' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <input type="hidden" name="experiment_id" value="{{ experiment_id }}">
+
+        <!-- Cleanup trigger modal -->
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#cleanupModal">
+          Cleanup
+        </button>
+
+        <!-- Cleanup Modal -->
+        <div class="modal fade" id="cleanupModal" tabindex="-1" role="dialog" aria-labelledby="cleanupModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="cleanupModalLabel">File CleanUp</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                All files will be deleted!
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete files</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>

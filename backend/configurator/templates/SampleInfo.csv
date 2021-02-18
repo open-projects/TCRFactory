@@ -1,0 +1,5 @@
+sample_name	chain	barcodes	R1	R2	baseline	subject_id	antigen	reads.exp
+{% spaceless %}
+{% for string in sample_stings %}{{ string }}
+{% endfor %}
+{% endspaceless %}

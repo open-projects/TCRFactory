@@ -1,0 +1,166 @@
+<!--
+TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
+-->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta http-equiv="refresh" content="5" />
+
+  <title>TCRpiper</title>
+  <link rel="shortcut icon" href="{% static "favicon.ico" %}" />
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static "css/main.css" %}" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'index:index' %}">TCRpiper</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'experiment:experiment_stock' %}">Experiments</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'primers:index' %}">Primers</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'accounts:sign_out' %}">Sign Out</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mb-5"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mb-5">
+        <div class="card">
+          <div class="card-body">
+           <h2 class="card-title"><p class="text-primary">Experiments</p></h2>
+           <hr class="my-3">
+           <h4 class="text-secondary">{{ num_of_experiments }} experiment(s) in stock</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Centered Row -->
+    <div class="row">
+      <div class="col-md-12 mb-3">
+        <div class="card h-100">
+          <div class="card-header">List of experiments</div>
+          <div class="card-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Samples</th>
+                  <th scope="col" style="">Created</th>
+                  <th scope="col" style="">Status</th>
+                  <th scope="col" style="">Configuration</th>
+                  <th scope="col" style="">Processing</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for experiment in experiment_list %}
+                <tr class=
+                {% if experiment.status == 'open' %}
+                  "table-success" onclick="location.href='{% url 'experiment:experiment_get' experiment.id %}'
+                {% elif experiment.status == 'closed' %}
+                  "table-primary" onclick="location.href='{% url 'experiment:experiment_proc' experiment.id %}'
+                {% else %}
+                  ""
+                {% endif %}
+                "style="cursor: pointer;" name="{{ experiment.id }}" id="experimentID{{ experiment.id }}"
+                >
+                  <td scope="row">{{ experiment.id }}</td>
+                  <td>{{ experiment.name }}</td>
+                  <td>{{ experiment.num_of_samples }}</td>
+                  <td>{{ experiment.date }}</td>
+                  <td>{{ experiment.status }}</td>
+                  <td>
+                    {% if experiment.status == 'open' %}
+                      <span class="text-danger">Not available</span>
+                    {% else %}
+                      <span><a href="{% url 'configurator:get_samplesheet' experiment.id %}">SampleSheet</a></span>
+                      &nbsp;
+                      <span><a href="{% url 'configurator:get_sampleinfo' experiment.id %}">SampleInfo</a></span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if experiment.status == 'open' %}
+                      <span class="text-danger">Not available</span>
+                    {% else %}
+                      {% if experiment.output_status == 'incomplete' %}
+                        <span class="text-info">No loaded data</span>
+                      {% elif experiment.output_status == 'waiting' %}
+                        <span class=""><a href="{% url 'pipeline:pipeline_get' experiment.id %}">Server was busy, run now</a></span>
+                      {% elif experiment.output_status == 'ongoing' %}
+                        <span class="text-success">Processing... Wait</span>
+                      {% elif experiment.output_status == 'ready' %}
+                        <span class=""><a href="{% url 'pipeline:pipeline_download' experiment.id %}">Download</a></span>
+                      {% endif %}
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer">
+            <button type="button" class="btn invisible">Placeholder</button>
+            <span class="float-right">
+              <a class="btn btn-success" href="{% url 'experiment:experiment_new' %}">Create experiment</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p class="text-center text-white">TCRpiper 2020</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static "vendor/jquery/jquery.min.js" %}"></script>
+  <script src="{% static "vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+  <script src="{% static "js/main.js" %}"></script>
+
+</body>
+
+</html>
