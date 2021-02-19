@@ -61,14 +61,17 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
         <div class="container">
           <nav>
             <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-              <a class="nav-item nav-link" id="nav-sign-up-tab" data-toggle="tab" href="#nav-sign-up" role="tab" aria-controls="nav-sign-up" aria-selected="false">Sign Up</a>
-              <a class="nav-item nav-link active" id="nav-sign-in-tab" data-toggle="tab" href="#nav-sign-in" role="tab" aria-controls="nav-sign-in" aria-selected="true">Sign In</a>
+              <a class="nav-item nav-link {% if signup_error %} active {% endif %} " id="nav-sign-up-tab" data-toggle="tab" href="#nav-sign-up" role="tab"
+                 aria-controls="nav-sign-up" aria-selected="false">Sign Up</a>
+              <a class="nav-item nav-link {% if not signup_error %} active {% endif %}" id="nav-sign-in-tab" data-toggle="tab" href="#nav-sign-in" role="tab"
+                 aria-controls="nav-sign-in" aria-selected="true">Sign In</a>
             </div>
           </nav>
           <div class="tab-content" id="nav-tabContent">
 
             <!-- Sign Up Form -->
-            <div class="tab-pane fade" id="nav-sign-up" role="tabpanel" aria-labelledby="nav-sign-up-tab">
+            <div class="tab-pane fade {% if signup_error %} show active {% endif %}"
+                 id="nav-sign-up" role="tabpanel" aria-labelledby="nav-sign-up-tab">
               <form action="{% url 'accounts:sign_up' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="row">
@@ -100,6 +103,16 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
                       Valid matched passwords are required.
                     </div>
                   </div>
+                  {% if signup_error %}
+                  <div class="col-md-12 mb-4">
+                    <ul>
+                      <li>Your password can’t be too similar to your other personal information.</li>
+                      <li>Your password must contain at least 8 characters.</li>
+                      <li>Your password can’t be a commonly used password.</li>
+                      <li>Your password can’t be entirely numeric.</li>
+                    </ul>
+                  </div>
+                  {% endif %}
                   <div class="col-md-12">
                     <div class="float-right">
                       <button type="submit" class="btn btn-success">Sign Up</button>
@@ -111,7 +124,8 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
             <!-- /.tab-pane (Sign Up Form) -->
 
             <!-- Sign In Form -->
-            <div class="tab-pane fade show active" id="nav-sign-in" role="tabpanel" aria-labelledby="nav-sign-in-tab">
+            <div class="tab-pane fade {% if not signup_error %} show active {% endif %}"
+                 id="nav-sign-in" role="tabpanel" aria-labelledby="nav-sign-in-tab">
               <form action="{% url 'accounts:sign_in' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="row">

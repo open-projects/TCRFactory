@@ -28,6 +28,8 @@ def sign_up(request):
             user = form.save()
             login(request, user)
             return HttpResponseRedirect(reverse('experiment:experiment_stock'))
+        else:
+            return HttpResponseRedirect(reverse('index:signup_error'))
     return HttpResponseRedirect(reverse('index:index'))
 
 
