@@ -10,7 +10,7 @@ from . import views
 app_name = 'index'
 urlpatterns = [
     path('', views.index, name='index'),
-    path('signup_error', views.signup_error, name='signup_error'),
+    path('signup_error/', views.signup_error, name='signup_error'),
     path('admin/', admin.site.urls),
 ]
 
