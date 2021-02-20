@@ -9,6 +9,7 @@ from django.conf import settings
 # closed - the experiment is ready to be sequenced and processed
 # archived - the experiment is complete and deactivated
 EXPERIMENT_STATUS = (('open', 'Open'), ('closed', 'Closed'), ('archived', 'Archived'))
+EXPERIMENT_TYPES = (('miseq', 'MiSeq'), ('nextseq', 'NextSeq'))
 
 # incomplete - tha data is incomplete, the task can't be running
 # waiting - server is busy, the task can't be running

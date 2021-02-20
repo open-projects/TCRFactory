@@ -8,7 +8,7 @@ from django.db import models
 from sample.models import Sample
 from filestorage.models import cleanup
 from .settings import EXPERIMENT_STATUS, FILE_VERSION, WORKFLOW_TYPE, APPLICATION_TYPE
-from .settings import ASSAY_TYPE, CHEMISTRY, REVCOMPL, RESULT_STATUS
+from .settings import ASSAY_TYPE, CHEMISTRY, REVCOMPL, RESULT_STATUS, EXPERIMENT_TYPES
 
 
 class Experiment(models.Model):
@@ -32,6 +32,7 @@ class Experiment(models.Model):
     output_status = models.CharField(max_length=200, choices=RESULT_STATUS, default='incomplete')
     output_dir = models.CharField(max_length=200, default='')
     output_file = models.CharField(max_length=200, default='')
+    type = models.CharField(max_length=200, choices=EXPERIMENT_TYPES, default='miseq')
 
     def delete(self, using=None, keep_parents=False):
         try:
