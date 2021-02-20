@@ -11,6 +11,7 @@ app_name = 'index'
 urlpatterns = [
     path('', views.index, name='index'),
     path('signup_error/', views.signup_error, name='signup_error'),
+    path('signin_error/', views.signin_error, name='signin_error'),
     path('admin/', admin.site.urls),
 ]
 

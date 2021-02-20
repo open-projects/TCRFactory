@@ -143,7 +143,11 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
                       Valid user name is required.
                     </div>
                   </div>
-
+                  {% if signin_error %}
+                  <div class="col-md-12 mb-4">
+                    <span class="text-danger">Wrong name or password.</span>
+                  </div>
+                  {% endif %}
                   <div class="col-md-12">
                     <div class="float-right">
                       <button type="submit" class="btn btn-success">Sign In</button>

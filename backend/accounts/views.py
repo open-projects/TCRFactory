@@ -17,7 +17,7 @@ def sign_in(request):
             login(request, user)
             return HttpResponseRedirect(reverse('experiment:experiment_stock'))
         else:
-            ...  # TODO: add control for duplicate names and emails
+            return HttpResponseRedirect(reverse('index:signin_error'))
     return HttpResponseRedirect(reverse('index:index'))
 
 

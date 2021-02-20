@@ -6,11 +6,16 @@ from django.shortcuts import render
 
 
 def index(request):
-    context = {}
+    context = {'signup_error': 0, 'signin_error': 0}
     return render(request, 'index.html', context)
 
 
 def signup_error(request):
-    context = {'signup_error': 1}
+    context = {'signup_error': 1, 'signin_error': 0}
+    return render(request, 'index.html', context)
+
+
+def signin_error(request):
+    context = {'signup_error': 0, 'signin_error': 1}
     return render(request, 'index.html', context)
 
