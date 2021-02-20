@@ -13,7 +13,7 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <meta http-equiv="refresh" content="5" />
+  <!--<meta http-equiv="refresh" content="5" /> -->
 
   <title>TCRpiper</title>
   <link rel="shortcut icon" href="{% static "favicon.ico" %}" />
@@ -137,10 +137,19 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
             </table>
           </div>
           <div class="card-footer">
-            <button type="button" class="btn invisible">Placeholder</button>
-            <span class="float-right">
-              <a class="btn btn-success" href="{% url 'experiment:experiment_new' %}">Create experiment</a>
-            </span>
+            <form action="{% url 'experiment:experiment_new' %}" method="post" enctype="multipart/form-data">
+              <label class="radio-inline" style="margin-bottom: 0px; margin-top: 8px; margin-right: 8px;">
+                <input type="radio" name="seqtype" value="miseq" checked>
+                MiSeq
+              </label>
+              <label class="radio-inline" style="margin-bottom: 0px; margin-top: 8px; margin-right: 8px;">
+                <input type="radio" name="seqtype" value="nextseq">
+                NextSeq
+              </label>
+              <span class="float-right">
+                <button type="submit" class="btn btn-success">Create experiment</button>
+              </span>
+            </form>
           </div>
         </div>
       </div>

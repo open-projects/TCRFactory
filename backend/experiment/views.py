@@ -131,7 +131,20 @@ def get(request, experiment_id=0):
             'sample_list': sample_list,
             'num_of_samples': len(sample_list)
         }
-    else:
+    else:  # new experiment
+        seqtype = None
+        if request.method == "POST" and 'seqtype' in request.POST:
+            seqtype = request.POST['seqtype']
+        else:
+            return HttpResponseRedirect(reverse('experiment:experiment_stock'))
+
+        if seqtype == 'miseq':
+            ...
+        elif seqtype == 'nextseq':
+            ...
+        else:
+            return HttpResponseRedirect(reverse('experiment:experiment_stock'))
+
         context = {
             'experiment_id': 0,
             'experiment_status': 'open',
@@ -155,6 +168,7 @@ def get(request, experiment_id=0):
             'sample_list': list(),
             'num_of_samples': 0
         }
+
     return render(request, 'experiment.html', context)
 
 
