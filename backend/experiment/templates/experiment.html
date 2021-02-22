@@ -116,7 +116,11 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
+                          <label for="description">Instrument</label>
+                          <input type="text" class="form-control" name="type" id="type" placeholder="Type" value="{{ type }}">
+                        </div>
+                        <div class="col-md-3 mb-3">
                           <div class="form-group">
                             <label for="workflow">Workflow</label>
                             <select class="form-control" name="workflow" id="workflow">
@@ -131,7 +135,7 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
                             </select>
                           </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                           <div class="form-group">
                             <label for="application">Application</label>
                             <select class="form-control my-form-control" name="application" id="application">
@@ -145,7 +149,7 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
                             </select>
                           </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                           <div class="form-group">
                             <label for="assay">Assay</label>
                             <select class="form-control" name="assay" id="assay">

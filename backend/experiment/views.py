@@ -88,6 +88,7 @@ def set(request, experiment_id=0):
                                     reads_1=request.POST['reads_1'],
                                     reads_2=request.POST['reads_2'] if request.POST['reads_2'] else 0,
                                     rev_compl=request.POST['rev_compl'],
+                                    type=request.POST['type']
                                    )
             experiment.save()
         except Exception:
@@ -114,6 +115,7 @@ def get(request, experiment_id=0):
             'iem_file_version': experiment.iem_file_version,
             'experiment_name': experiment.name,
             'description': experiment.description,
+            'type': experiment.type,
 
             'workflow': experiment.workflow,
             'application': experiment.application,
@@ -132,17 +134,12 @@ def get(request, experiment_id=0):
             'num_of_samples': len(sample_list)
         }
     else:  # new experiment
-        seqtype = None
-        if request.method == "POST" and 'seqtype' in request.POST:
-            seqtype = request.POST['seqtype']
+        if request.method == "POST" and 'type' in request.POST:
+            seqtype = request.POST['type']
         else:
             return HttpResponseRedirect(reverse('experiment:experiment_stock'))
 
-        if seqtype == 'miseq':
-            ...
-        elif seqtype == 'nextseq':
-            ...
-        else:
+        if seqtype != 'MiSeq' and seqtype != 'NextSeq':
             return HttpResponseRedirect(reverse('experiment:experiment_stock'))
 
         context = {
@@ -151,6 +148,7 @@ def get(request, experiment_id=0):
             'iem_file_version': FILE_VERSION,
             'experiment_name': '',
             'description': '',
+            'type': seqtype,
 
             'workflow': None,
             'application': None,

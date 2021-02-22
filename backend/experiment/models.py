@@ -32,7 +32,7 @@ class Experiment(models.Model):
     output_status = models.CharField(max_length=200, choices=RESULT_STATUS, default='incomplete')
     output_dir = models.CharField(max_length=200, default='')
     output_file = models.CharField(max_length=200, default='')
-    type = models.CharField(max_length=200, choices=EXPERIMENT_TYPES, default='miseq')
+    type = models.CharField(max_length=200, choices=EXPERIMENT_TYPES, default='MiSeq')
 
     def delete(self, using=None, keep_parents=False):
         try:

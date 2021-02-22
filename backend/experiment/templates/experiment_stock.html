@@ -82,6 +82,7 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
               <thead>
                 <tr>
                   <th scope="col">#</th>
+                  <th scope="col">Type</th>
                   <th scope="col">Name</th>
                   <th scope="col">Samples</th>
                   <th scope="col" style="">Created</th>
@@ -103,6 +104,7 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
                 "style="cursor: pointer;" name="{{ experiment.id }}" id="experimentID{{ experiment.id }}"
                 >
                   <td scope="row">{{ experiment.id }}</td>
+                  <td>{{ experiment.type }}</td>
                   <td>{{ experiment.name }}</td>
                   <td>{{ experiment.num_of_samples }}</td>
                   <td>{{ experiment.date }}</td>
@@ -138,12 +140,13 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
           </div>
           <div class="card-footer">
             <form action="{% url 'experiment:experiment_new' %}" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
               <label class="radio-inline" style="margin-bottom: 0px; margin-top: 8px; margin-right: 8px;">
-                <input type="radio" name="seqtype" value="miseq" checked>
+                <input type="radio" name="type" value="MiSeq" checked>
                 MiSeq
               </label>
               <label class="radio-inline" style="margin-bottom: 0px; margin-top: 8px; margin-right: 8px;">
-                <input type="radio" name="seqtype" value="nextseq">
+                <input type="radio" name="type" value="NextSeq">
                 NextSeq
               </label>
               <span class="float-right">
