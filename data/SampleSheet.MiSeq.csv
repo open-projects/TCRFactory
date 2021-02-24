@@ -1,0 +1,44 @@
+[Header]
+IEMFileVersion,4
+Experiment Name,RUN8_GE8_28032019
+Date,28/03/2019
+Workflow,GenerateFASTQ
+Application,FASTQ Only
+Assay,TruSeq HT
+Description
+Chemistry,Amplicon
+
+[Reads]
+166
+166
+
+[Settings]
+ReverseComplement,0
+
+[Data]
+Sample_ID,Sample_Name,Sample_Plate,Sample_Well,I7_Index_ID,index,Sample_Project,Description
+p1136_nlvpos_b,BCJ33,,,BCJ33,CAGGCG,,
+p1136_nlvpos_a,ACJ13,,,ACJ13,AGTCAA,,
+p1136_nlvneg_b,BCJ32,,,BCJ32,CACTCA,,
+p1136_nlvneg_a,ACJ24,,,ACJ24,GGTAGC,,
+p845_HA1_expansion_well6_a,ACJ15,,,ACJ15,ATGTCA,,
+p845_HA1_expansion_CD137_all_wells_a,ACJ23,,,ACJ23,GAGTGG,,
+p845_HA1_expansion_well3_a,ACJ12,,,ACJ12,CTTGTA,,
+p117_r1_total_PBMC_a,ACJ27,,,ACJ27,ATTCCT,,
+p117_r1_total_PBMC_b,BCJ31,,,BCJ31,CACGAT,,
+p135_r2_total_PBMC_a,ACJ35,,,ACJ35,CATTTT,,
+p135_r2_total_PBMC_b,BCJ29,,,BCJ29,CAACTA,,
+p826_total_PBMC_a,ACJ28,,,ACJ28,CAAAAG,,
+p826_total_PBMC_b,BCJ48,,,BCJ48,TCGGCA,,
+1101_GLC_CD137neg,BCJ2,,,BCJ2,CGATGT,,
+1101_GLC_CD137pos,BCJ4,,,BCJ4,TGACCA,,
+1101_GLC_puls_tetr_neg,BCJ5,,,BCJ5,ACAGTG,,
+1101_GLC_puls_tetr_pos,BCJ9,,,BCJ9,GATCAG,,
+1101_GLC_puls_total,BCJ10,,,BCJ10,TAGCTT,,
+1101_unp_total,BCJ11,,,BCJ11,GGCTAC,,
+1110_NLV_CD137neg,BCJ12,,,BCJ12,CTTGTA,,
+1110_NLV_CD137pos,BCJ15,,,BCJ15,ATGTCA,,
+1110_NLV_puls_tetr_neg,BCJ16,,,BCJ16,CCGTCC,,
+1110_NLV_puls_tetr_pos,BCJ18,,,BCJ18,GTCCGC,,
+1110_NLV_puls_total,BCJ19,,,BCJ19,GTGAAA,,
+1110_unp_total,BCJ25,,,BCJ25,ACTGAT,,

@@ -9,7 +9,6 @@ Description{% if experiment.description %},"{{ experiment.description }}"{% endi
 Chemistry,{{ experiment.chemistry }}
 
 [Reads]
-
 {{ experiment.reads_1 }}
 {{ experiment.reads_2 }}
 
