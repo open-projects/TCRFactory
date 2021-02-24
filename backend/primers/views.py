@@ -21,7 +21,8 @@ def index(request):
     num_uploaded_smarts = -1
     duplicate_indexes = []
     duplicate_smarts = []
-    active_indexes = 'show active'
+    active_indexes_i7 = 'show active'
+    active_indexes_i5 = ''
     active_smarts = ''
 
     if request.POST:
@@ -32,7 +33,7 @@ def index(request):
                 file_type = 'inputIndexFile'
             elif 'inputSmartFile' in request.FILES:
                 file_type = 'inputSmartFile'
-                active_indexes = ''
+                active_indexes_i7 = ''
                 active_smarts = 'show active'
 
             if file_type:
@@ -87,7 +88,7 @@ def index(request):
                     show_tab_smart = 1
 
             if show_tab_smart:
-                active_indexes = ''
+                active_indexes_i7 = ''
                 active_smarts = 'show active'
 
     # data request
@@ -102,7 +103,7 @@ def index(request):
         'num_uploaded_smarts': num_uploaded_smarts,
         'duplicate_indexes': duplicate_indexes,
         'duplicate_smarts': duplicate_smarts,
-        'active_indexes': active_indexes,
+        'active_indexes_i7': active_indexes_i7,
         'active_smarts': active_smarts,
     }
     return render(request, 'primers.html', context)

@@ -77,14 +77,15 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
       <div class="col-md-12 mb-5">
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link {{ active_indexes }}" id="nav-index-tab" data-toggle="tab" href="#nav-index" role="tab" aria-controls="nav-index" aria-selected="true">Indexes</a>
+            <a class="nav-item nav-link {{ active_indexes_i7 }}" id="nav-index-i7-tab" data-toggle="tab" href="#nav-index-i7" role="tab" aria-controls="nav-index-i7" aria-selected="true">Indexes (I7)</a>
+            <a class="nav-item nav-link {{ active_indexes_i5 }}" id="nav-index-i5-tab" data-toggle="tab" href="#nav-index-i5" role="tab" aria-controls="nav-index-i5" aria-selected="false">Indexes (I5)</a>
             <a class="nav-item nav-link {{ active_smarts }}" id="nav-smart-tab" data-toggle="tab" href="#nav-smart" role="tab" aria-controls="nav-smart" aria-selected="false">Smarts</a>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-          <div class="tab-pane fade {{ active_indexes }}" id="nav-index" role="tabpanel" aria-labelledby="nav-index-tab">
+          <div class="tab-pane fade {{ active_indexes_i7 }}" id="nav-index-i7" role="tabpanel" aria-labelledby="nav-index-i7-tab">
 
-            <!-- Indexes in the Database -->
+            <!-- Indexes I7 in the Database -->
             <div class="row">
               <div class="col-md-12 mb-5">
                 <div class="card h-100">
@@ -174,7 +175,7 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
               </div>
             </div>
 
-            <!-- Loaded Indexes -->
+            <!-- Loaded Indexes I7 -->
             {% if num_uploaded_indexes > -1 %}
             <div class="row">
               <div class="col-md-12 mb-5">
@@ -193,7 +194,152 @@ TCRpiper - a pipeline for TCR sequences treatment. Copyright (C) 2020  D. Malko
             </div>
             {% endif %}
 
-            <!-- Duplicated Indexes -->
+            <!-- Duplicated Indexes I7 -->
+            {% if duplicate_indexes %}
+            <div class="row ">
+              <div class="col-md-12 mb-5">
+                <div class="card h-100">
+                  <div class="card-header bg-warning text-danger">Not Loaded Records ('ID' and 'Sequence' fields MUST be unique!)</div>
+                  <div class="card-body scroll">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col" style="width:8em;">ID</th>
+                          <th scope="col">Sequence</th>
+                          <th scope="col">Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for index in duplicate_indexes %}
+                        <tr>
+                          <td>{{ index.name }}</td>
+                          <td>{{ index.seq }}</td>
+                          <td>{{ index.source }}</td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+          </div>
+          <!-- /.tab-pane -->
+
+          <div class="tab-pane fade {{ active_indexes_i5 }}" id="nav-index-i5" role="tabpanel" aria-labelledby="nav-index-i5-tab">
+
+            <!-- Indexes I5 in the Database -->
+            <div class="row">
+              <div class="col-md-12 mb-5">
+                <div class="card h-100">
+                  <div class="card-header">List of Indexes</div>
+                  <div class="card-body scroll">
+                    <form action="" method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th scope="col" style="width:8em;">
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input check-all-table" id="indexCheck0">
+                                <label class="custom-control-label" for="indexCheck0">
+                                  ID
+                                </label>
+                              </div>
+                            </th>
+                            <th scope="col">Sequence</th>
+                            <th scope="col">Source</th>
+                            <th scope="col" style="width:8em;">Date</th>
+                            <th scope="col">Comments</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        {% for index in index_list %}
+                          <tr>
+                            <td>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name="indexCheck{{ index.id }}" id="indexCheck{{ index.id }}">
+                                <label class="custom-control-label" for="indexCheck{{ index.id }}">
+                                  {{ index.name }}
+                                </label>
+                              </div>
+                            </td>
+                            <td>{{ index.seqmarked }}</td>
+                            <td>{{ index.source }}</td>
+                            <td>{{ index.date }}</td>
+                            <td>{{ index.comment }}</td>
+                          </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                      <button type="submit" style="display: none;" id="delIndexForm"></button>
+                    </form>
+                  </div>
+                  <div class="card-footer">
+                    <!-- Index Button trigger modal -->
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#indexModal">
+                      Delete
+                    </button>
+
+                    <!-- Index Modal -->
+                    <div class="modal fade" id="indexModal" tabindex="-1" role="dialog" aria-labelledby="indexModalTitle" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title text-danger" id="indexModalLongTitle">You are going to delete records. Are you sure?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" id="delIndex">OK</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <span class="float-right">
+                      <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="input-group">
+                          <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="inputIndexFile" id="inputIndexFile">
+                            <label class="custom-file-label" for="inputIndexFile">Choose file</label>
+                          </div>
+                          <div class="input-group-append">
+                            <button type="submit" class="btn btn-success">Upload</button>
+                          </div>
+                        </div>
+                      </form>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Loaded Indexes I5 -->
+            {% if num_uploaded_indexes > -1 %}
+            <div class="row">
+              <div class="col-md-12 mb-5">
+                <div class="card h-100">
+                  {% if num_uploaded_indexes == 0 %}
+                  <div class="card-body text-danger">
+                    No Records to Upload! Check the File Format (it must be a tab separated CSV file).
+                  </div>
+                  {% else %}
+                  <div class="card-body text-info">
+                    Uploaded {{ num_uploaded_indexes }} Index(es)
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Duplicated Indexes I5 -->
             {% if duplicate_indexes %}
             <div class="row ">
               <div class="col-md-12 mb-5">
