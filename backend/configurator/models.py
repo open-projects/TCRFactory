@@ -14,14 +14,19 @@ def makeSamplesheet(experiment):
         'sample_list': sample_list,
     }
 
-    return render_to_string('SampleSheet.csv', context)
+    if experiment.type == 'MiSeq':
+        return render_to_string('SampleSheet_I7.csv', context)
+    if experiment.type == 'NextSeq':
+        return render_to_string('SampleSheet_I7_I5.csv', context)
+
+    return 'ERROR: wrong experiment type.'
 
 
 def makeSampleinfo(experiment):
     paired = experiment.is_pared()
 
     n = 1
-    sample_stings = list()
+    sample_strings = list()
     for sample in Sample.objects.filter(experiment_id=experiment.id).order_by('id'):  # ordering is important !
         if sample.alfa_index_name:
             alfa_name = sample.get_alfa_name()
@@ -36,7 +41,7 @@ def makeSampleinfo(experiment):
             antigen = ''
             reads_exp = sample.read_number
 
-            sample_stings.append(
+            sample_strings.append(
                 '\t'.join((alfa_name, chain, barcodes, r1, r2, baseline, subject_id, antigen, str(reads_exp))))
             n += 1
 
@@ -53,12 +58,12 @@ def makeSampleinfo(experiment):
             antigen = ''
             reads_exp = sample.read_number
 
-            sample_stings.append(
+            sample_strings.append(
                 '\t'.join((beta_name, chain, barcodes, r1, r2, baseline, subject_id, antigen, str(reads_exp))))
             n += 1
 
     context = {
-        'sample_stings': sample_stings,
+        'sample_strings': sample_strings,
     }
 
     return render_to_string('SampleInfo.csv', context)

@@ -16,12 +16,12 @@ Chemistry,{{ experiment.chemistry }}
 ReverseComplement,{{ experiment.rev_compl }}
 
 [Data]
-Sample_ID,Sample_Name,Sample_Plate,Sample_Well,I7_Index_ID,index,Sample_Project,Description
+Sample_ID,Sample_Name,Sample_Plate,Sample_Well,I7_Index_ID,index,I5_Index_ID,index2,Sample_Project,Description
 
 {% spaceless %}
 {% for sample in sample_list %}{% spaceless %}
-{% if sample.alfa_index_name %}{{ sample.get_alfa_ident }},{{ sample.get_alfa_name }},{{ sample.plate }},{{ sample.well }},{{ sample.alfa_index_name }},{{ sample.get_alfa_index_seqcore_rev }},{{ sample.alfa_smart_name }},{{ sample.get_alfa_smart_seqcore_rev }},{{ sample.project }},{{ sample.comments }}{% endif %}
-{% if sample.beta_index_name %}{{ sample.get_beta_ident }},{{ sample.get_beta_name }},{{ sample.plate }},{{ sample.well }},{{ sample.beta_index_name }},{{ sample.get_beta_index_seqcore_rev }},{{ sample.beta_smart_name }},{{ sample.get_beta_smart_seqcore_rev }},{{ sample.project }},{{ sample.comments }}{% endif %}
+{% if sample.alfa_index_name %}{{ sample.get_alfa_ident }},{{ sample.get_alfa_name }},{{ sample.plate }},{{ sample.well }},{{ sample.alfa_index_name }},{{ sample.get_alfa_index_seqcore_rev }},{{ sample.smart_name }},{{ sample.get_smart_seqcore_rev }},{{ sample.project }},{{ sample.comments }}{% endif %}
+{% if sample.beta_index_name %}{{ sample.get_beta_ident }},{{ sample.get_beta_name }},{{ sample.plate }},{{ sample.well }},{{ sample.beta_index_name }},{{ sample.get_beta_index_seqcore_rev }},{{ sample.smart_name }},{{ sample.get_smart_seqcore_rev }},{{ sample.project }},{{ sample.comments }}{% endif %}
 {% endspaceless %}
 {% endfor %}
 {% endspaceless %}

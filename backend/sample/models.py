@@ -34,7 +34,7 @@ class Sample(models.Model):
     def type(self):
         if self.alfa_index_name == '' and self.beta_index_name == '':
             return 'ab'
-        elif self.alfa_indexname == '':
+        elif self.alfa_index_name == '':
             return 'a'
         else:
             return 'b'
@@ -67,6 +67,13 @@ class Sample(models.Model):
     def get_smart_seqcore(self):
         for smart in Smart.objects.filter(name=self.smart_name):
             return smart.seqcore
+        return ''
+
+    def get_smart_seqcore_rev(self):
+        for smart in Smart.objects.filter(name=self.smart_name):
+            if len(smart.seqcore) > 0:
+                seqcore = "".join(COMPLEMENT.get(base, base) for base in reversed(smart.seqcore))
+            return seqcore
         return ''
 
     def get_alfa_index(self):
