@@ -178,11 +178,10 @@ class UtilFile(Tool):
             with open(file_path, 'wb') as f:
                 f.write(r.content)
 
-
-        if self._bin.find(self.name):
-            print('...OK')
-        else:
-            raise Exception("Can't install the tool from: {}".format(self.url))
+            if self._bin.find(self.name):
+                print('...OK')
+            else:
+                raise Exception("Can't install the tool from: {}".format(self.url))
 
 # end of class GitHubFolder
 
