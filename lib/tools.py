@@ -173,10 +173,10 @@ class UtilFile(Tool):
                 raise Exception("Can't find the tool URL to install: {}".format(self.name))
             print('Installing: {}'.format(self.url), end=" ")
 
-        file_path = self._bin.path() + '/' + self.name
-        r = requests.get(self.url, allow_redirects=True)
-        with open(file_path, 'wb') as f:
-            f.write(r.content)
+            file_path = self._bin.path() + '/' + self.name
+            r = requests.get(self.url, allow_redirects=True)
+            with open(file_path, 'wb') as f:
+                f.write(r.content)
 
 
         if self._bin.find(self.name):
