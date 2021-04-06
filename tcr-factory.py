@@ -21,7 +21,7 @@ def main():
     input_parser = argparse.ArgumentParser(description='TCRFactory: a Web Application for TCR Repertoire Sequencing.')
 
     input_parser.add_argument('-t',
-                              metavar='MiSeq',
+                              metavar='MiSeq|NextSeq',
                               choices=['MiSeq', 'NextSeq'],
                               help='the sequencing tool',
                               required=True)
