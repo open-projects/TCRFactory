@@ -23,7 +23,7 @@ class Bin:
         path = self._bin + '/**/' + re.sub(r'^/', '', file_name)
         glb = glob.glob(path, recursive=True)
         if len(glb) > 0:
-            return glb[0]
+            return os.path.abspath(glb[0])
 
         return None
 
