@@ -209,15 +209,15 @@ TCRpiper - a pipeline for TCR sequence treatment. Copyright (C) 2020  D. Malko
                             </div>
                           </div>
                           <div class="dropdown-with-input mb-3">
-                            <label for="alfa_index_name">
+                            <label for="alfa_indexi7_name">
                               <div class="dropdown show">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" id="dropdownAlfaIndex" aria-haspopup="true" aria-expanded="false">Index <span class="attention">*</span></a>
-                                <div class="dropdown-menu myDropDown" aria-labelledby="dropdownAlfaIndex">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" id="dropdownAlfaIndexI7" aria-haspopup="true" aria-expanded="false">Index I7<span class="attention">*</span></a>
+                                <div class="dropdown-menu myDropDown" aria-labelledby="dropdownAlfaIndexI7">
                                   <!-- drop down -->
                                   <table class="table table-borderless table-sm">
                                     <tbody>
                                       {% for index in alfa_index_list %}
-                                        <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="alfaIndex{{ index.id }}">
+                                        <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="alfaIndexI7{{ index.id }}">
                                           {% if index.seqcore in used_barcodes.indexes %}
                                             <th scope="row" class="alfaindexid used_barcode">{{ index.name }}</th>
                                             <td class="alfaindexseq used_barcode">{{ index.seqcore }}</td>
@@ -232,11 +232,42 @@ TCRpiper - a pipeline for TCR sequence treatment. Copyright (C) 2020  D. Malko
                                 </div>
                               </div>
                             </label>
-                            <input type="text" class="form-control alfa_beta_index" name="alfa_index_name" data-dropdown="" id="alfa_index_name" placeholder="index name" value="{{ alfa_index_name }}" onkeydown="return false">
+                            <input type="text" class="form-control alfa_beta_index" name="alfa_index_name" data-dropdown="" id="alfa_indexi7_name" placeholder="I7 index name" value="{{ alfa_index_name }}" onkeydown="return false">
                             <div class="invalid-feedback">
                               Please enter a valid index.
                             </div>
                           </div>
+                          {% if experiment_type == 'NextSeq' %}
+                          <div class="dropdown-with-input mb-3">
+                            <label for="alfa_indexi5_name">
+                              <div class="dropdown show">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" id="dropdownAlfaIndexI5" aria-haspopup="true" aria-expanded="false">Index I5<span class="attention">*</span></a>
+                                <div class="dropdown-menu myDropDown" aria-labelledby="dropdownAlfaIndexI5">
+                                  <!-- drop down -->
+                                  <table class="table table-borderless table-sm">
+                                    <tbody>
+                                      {% for index in alfa_index_list %}
+                                        <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="alfaIndexI5{{ index.id }}">
+                                          {% if index.seqcore in used_barcodes.indexes %}
+                                            <th scope="row" class="alfaindexid used_barcode">{{ index.name }}</th>
+                                            <td class="alfaindexseq used_barcode">{{ index.seqcore }}</td>
+                                          {% else %}
+                                            <th scope="row" class="alfaindexid">{{ index.name }}</th>
+                                            <td class="alfaindexseq">{{ index.seqcore }}</td>
+                                          {% endif %}
+                                        </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </label>
+                            <input type="text" class="form-control alfa_beta_index" name="alfa_indexi5_name" data-dropdown="" id="alfa_indexi5_name" placeholder="I5 index name" value="{{ alfa_index_name }}" onkeydown="return false">
+                            <div class="invalid-feedback">
+                              Please enter a valid index.
+                            </div>
+                          </div>
+                          {% endif %}
                           <div class="mb-3">
                             <label for="alfa_index_benchling">2nd PCR Benchling ID</label>
                             <input type="text" class="form-control" name="alfa_index_benchling" id="alfa_index_benchling" placeholder="Identificator ( allowed symbols: [A-Z_0-9+-] )" value="{{ alfa_index_benchling }}">
@@ -263,15 +294,15 @@ TCRpiper - a pipeline for TCR sequence treatment. Copyright (C) 2020  D. Malko
                             </div>
                           </div>
                           <div class="dropdown-with-input mb-3">
-                            <label for="beta_index_name">
+                            <label for="beta_indexi7_name">
                               <div class="dropdown show">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" id="dropdownBetaIndex" aria-haspopup="true" aria-expanded="false">Index <span class="attention">*</span></a>
-                                <div class="dropdown-menu myDropDown" aria-labelledby="dropdownBetaIndex">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" id="dropdownBetaIndexI7" aria-haspopup="true" aria-expanded="false">Index I7<span class="attention">*</span></a>
+                                <div class="dropdown-menu myDropDown" aria-labelledby="dropdownBetaIndexI7">
                                   <!-- drop down -->
                                   <table class="table table-borderless table-sm">
                                     <tbody>
                                       {% for index in beta_index_list %}
-                                        <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="betaIndex{{ index.id }}">
+                                        <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="betaIndexI7{{ index.id }}">
                                           {% if index.seqcore in used_barcodes.indexes %}
                                             <th scope="row" class="betaindexid used_barcode">{{ index.name }}</th>
                                             <td class="betaindexseq used_barcode">{{ index.seqcore }}</td>
@@ -286,11 +317,42 @@ TCRpiper - a pipeline for TCR sequence treatment. Copyright (C) 2020  D. Malko
                                 </div>
                               </div>
                             </label>
-                            <input type="text" class="form-control alfa_beta_index" name="beta_index_name" data-dropdown="" id="beta_index_name" placeholder="index name" value="{{ beta_index_name }}" onkeydown="return false">
+                            <input type="text" class="form-control alfa_beta_index" name="beta_indexi7_name" data-dropdown="" id="beta_indexi7_name" placeholder="I7 index name" value="{{ beta_index_name }}" onkeydown="return false">
                             <div class="invalid-feedback">
                               Please enter a valid index.
                             </div>
                           </div>
+                          {% if experiment_type == 'NextSeq' %}
+                          <div class="dropdown-with-input mb-3">
+                            <label for="beta_indexi5_name">
+                              <div class="dropdown show">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" id="dropdownBetaIndexI5" aria-haspopup="true" aria-expanded="false">Index I5<span class="attention">*</span></a>
+                                <div class="dropdown-menu myDropDown" aria-labelledby="dropdownBetaIndexI5">
+                                  <!-- drop down -->
+                                  <table class="table table-borderless table-sm">
+                                    <tbody>
+                                      {% for index in beta_index_list %}
+                                        <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="betaIndexI5{{ index.id }}">
+                                          {% if index.seqcore in used_barcodes.indexes %}
+                                            <th scope="row" class="betaindexid used_barcode">{{ index.name }}</th>
+                                            <td class="betaindexseq used_barcode">{{ index.seqcore }}</td>
+                                          {% else %}
+                                            <th scope="row" class="betaindexid">{{ index.name }}</th>
+                                            <td class="betaindexseq">{{ index.seqcore }}</td>
+                                          {% endif %}
+                                        </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </label>
+                            <input type="text" class="form-control alfa_beta_index" name="beta_indexi5_name" data-dropdown="" id="beta_indexi5_name" placeholder="I5 index name" value="{{ beta_index_name }}" onkeydown="return false">
+                            <div class="invalid-feedback">
+                              Please enter a valid index.
+                            </div>
+                          </div>
+                          {% endif %}
                           <div class="mb-3">
                             <label for="beta_index_benchling">2nd PCR Benchling ID</label>
                             <input type="text" class="form-control" name="beta_index_benchling" id="beta_index_benchling" placeholder="Identificator ( allowed symbols: [A-Z_0-9+-] )" value="{{ beta_index_benchling }}">

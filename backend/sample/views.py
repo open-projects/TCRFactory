@@ -48,6 +48,7 @@ def get(request, experiment_id, sample_id=0):
     smart_list = Smart.objects.order_by('name')
     context = {  # for project creation
         'experiment_id': experiment.id,
+        'experiment_type': experiment.type,
         'sample_id': 0,
         'alfa_subsample_ident': 'alfa',
         'beta_subsample_ident': 'beta',
@@ -62,6 +63,7 @@ def get(request, experiment_id, sample_id=0):
         if sample.id == sample_id:
             context = {  # for project modification
                 'experiment_id': sample.experiment_id,
+                'experiment_type': experiment.type,
                 'sample_id': sample.id,
                 'sample_project': sample.project,
                 'sample_ident': sample.ident,

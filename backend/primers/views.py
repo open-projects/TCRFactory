@@ -21,8 +21,7 @@ def index(request):
     num_uploaded_smarts = -1
     duplicate_indexes = []
     duplicate_smarts = []
-    active_indexes_i7 = 'show active'
-    active_indexes_i5 = ''
+    active_indexes = 'show active'
     active_smarts = ''
 
     if request.POST:
@@ -33,7 +32,7 @@ def index(request):
                 file_type = 'inputIndexFile'
             elif 'inputSmartFile' in request.FILES:
                 file_type = 'inputSmartFile'
-                active_indexes_i7 = ''
+                active_indexes = ''
                 active_smarts = 'show active'
 
             if file_type:
@@ -41,14 +40,15 @@ def index(request):
                 for row in re.split(r'\n', smart_str(csvfile.read())):
                     fields = re.split(r'\t', row)
                     if file_type == 'inputIndexFile':
-                        if len(fields) == 5 and not re.match(r'source', fields[0]):
+                        if len(fields) == 6 and not re.match(r'source', fields[0]):
                             src = fields[0]
                             tp = norm_index_type(fields[1])
                             nm = fields[2]
                             sq = fields[3]
                             cmt = fields[4]
-                            if len(src) > 0 and len(nm) > 0 and len(sq) > 0 and len(tp) > 0:
-                                index = Index.create(nm, tp, sq.upper(), src, cmt)
+                            end_type = fields[5]
+                            if len(src) > 0 and len(nm) > 0 and len(sq) > 0 and len(tp) > 0 and end_type:
+                                index = Index.create(nm, tp, sq.upper(), src, cmt, end_type)
                                 if Index.objects.filter(name=nm).exists() or Index.objects.filter(seq=sq).exists():
                                     duplicate_indexes.append(index)
                                 else:
@@ -88,7 +88,7 @@ def index(request):
                     show_tab_smart = 1
 
             if show_tab_smart:
-                active_indexes_i7 = ''
+                active_indexes = ''
                 active_smarts = 'show active'
 
     # data request
@@ -103,7 +103,7 @@ def index(request):
         'num_uploaded_smarts': num_uploaded_smarts,
         'duplicate_indexes': duplicate_indexes,
         'duplicate_smarts': duplicate_smarts,
-        'active_indexes_i7': active_indexes_i7,
+        'active_indexes': active_indexes,
         'active_smarts': active_smarts,
     }
     return render(request, 'primers.html', context)
