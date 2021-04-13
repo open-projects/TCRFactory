@@ -7,6 +7,7 @@ import re
 
 
 INDEX_TYPE = (('alfa', 'Alfa'), ('beta', 'Beta'))
+INDEX_END = (('I7', 'I7'), ('I5', 'I5'))
 
 
 def norm_index_type(type):
@@ -52,9 +53,10 @@ class Index(models.Model):
     comment = models.TextField(default='')
     seqcore = models.CharField(db_index=True, max_length=200, default='')
     seqmarked = models.CharField(max_length=200, default='')
+    end = models.CharField(max_length=200, choices=INDEX_END, default='')
 
     @classmethod
-    def create(cls, name, type, seq, source, comment=''):
+    def create(cls, name, type, seq, source, comment='', end=''):
         seq = seq.upper()
         pattern = re.search(r'^(.{24})([NATGCU]{6})(.*)', seq)
         if pattern:
@@ -64,5 +66,5 @@ class Index(models.Model):
         else:
             raise Exception("Can't find a barcode pattern in the index sequence.")
 
-        return cls(name=name, type=type, seq=seq, source=source, comment=comment, seqcore=subseq, seqmarked=seqm)
+        return cls(name=name, type=type, seq=seq, source=source, comment=comment, seqcore=subseq, seqmarked=seqm, end=end)
 
