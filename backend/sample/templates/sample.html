@@ -216,7 +216,7 @@ TCRpiper - a pipeline for TCR sequence treatment. Copyright (C) 2020  D. Malko
                                   <!-- drop down -->
                                   <table class="table table-borderless table-sm">
                                     <tbody>
-                                      {% for index in alfa_index_list %}
+                                      {% for index in alfa_indexi7_list %}
                                         <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="alfaIndexI7{{ index.id }}">
                                           {% if index.seqcore in used_barcodes.indexes %}
                                             <th scope="row" class="alfaindexid used_barcode">{{ index.name }}</th>
@@ -246,7 +246,7 @@ TCRpiper - a pipeline for TCR sequence treatment. Copyright (C) 2020  D. Malko
                                   <!-- drop down -->
                                   <table class="table table-borderless table-sm">
                                     <tbody>
-                                      {% for index in alfa_index_list %}
+                                      {% for index in alfa_indexi5_list %}
                                         <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="alfaIndexI5{{ index.id }}">
                                           {% if index.seqcore in used_barcodes.indexes %}
                                             <th scope="row" class="alfaindexid used_barcode">{{ index.name }}</th>
@@ -301,7 +301,7 @@ TCRpiper - a pipeline for TCR sequence treatment. Copyright (C) 2020  D. Malko
                                   <!-- drop down -->
                                   <table class="table table-borderless table-sm">
                                     <tbody>
-                                      {% for index in beta_index_list %}
+                                      {% for index in beta_indexi7_list %}
                                         <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="betaIndexI7{{ index.id }}">
                                           {% if index.seqcore in used_barcodes.indexes %}
                                             <th scope="row" class="betaindexid used_barcode">{{ index.name }}</th>
@@ -331,7 +331,7 @@ TCRpiper - a pipeline for TCR sequence treatment. Copyright (C) 2020  D. Malko
                                   <!-- drop down -->
                                   <table class="table table-borderless table-sm">
                                     <tbody>
-                                      {% for index in beta_index_list %}
+                                      {% for index in beta_indexi5_list %}
                                         <tr class="dropdown-item" name="{{ index.name }}" data-dropdown="{{ index.seqcore }}" id="betaIndexI5{{ index.id }}">
                                           {% if index.seqcore in used_barcodes.indexes %}
                                             <th scope="row" class="betaindexid used_barcode">{{ index.name }}</th>

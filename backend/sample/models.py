@@ -23,9 +23,11 @@ class Sample(models.Model):
     smart_benchling = models.CharField(max_length=200, default='')
     alfa_subsample_ident = models.CharField(max_length=200, default='')  # sample_ID = sample_ident + alfa_subsample_ident
     alfa_index_name = models.CharField(max_length=200, default='')
+    alfa_index2_name = models.CharField(max_length=200, default='')
     alfa_index_benchling = models.CharField(max_length=200, default='')
     beta_subsample_ident = models.CharField(max_length=200, default='')  # sample_ID = sample_ident + beta_subsample_ident
     beta_index_name = models.CharField(max_length=200, default='')
+    beta_index2_name = models.CharField(max_length=200, default='')
     beta_index_benchling = models.CharField(max_length=200, default='')
     comments = models.TextField(default='')
     date = models.DateField(auto_now_add=True)
@@ -76,40 +78,40 @@ class Sample(models.Model):
             return seqcore
         return ''
 
-    def get_alfa_index(self):
-        for index in Index.objects.filter(name=self.alfa_index_name):
+    def get_alfa_index(self, end):
+        for index in Index.objects.filter(name=self.alfa_index_name, end=end):
             return index
         return None
 
-    def get_alfa_index_seqcore(self):
-        for index in Index.objects.filter(name=self.alfa_index_name):
+    def get_alfa_index_seqcore(self, end):
+        for index in Index.objects.filter(name=self.alfa_index_name, end=end):
             seqcore = index.seqcore
             if len(seqcore) > 0:
                 return seqcore
         return ''
 
-    def get_alfa_index_seqcore_rev(self):
-        for index in Index.objects.filter(name=self.alfa_index_name):
+    def get_alfa_index_seqcore_rev(self, end):
+        for index in Index.objects.filter(name=self.alfa_index_name, end=end):
             seqcore = index.seqcore
             if len(seqcore) > 0:
                 seqcore = "".join(COMPLEMENT.get(base, base) for base in reversed(seqcore))
                 return seqcore
         return ''
 
-    def get_beta_index(self):
-        for index in Index.objects.filter(name=self.beta_index_name):
+    def get_beta_index(self, end):
+        for index in Index.objects.filter(name=self.beta_index_name, end=end):
             return index
         return None
 
-    def get_beta_index_seqcore(self):
-        for index in Index.objects.filter(name=self.beta_index_name):
+    def get_beta_index_seqcore(self, end):
+        for index in Index.objects.filter(name=self.beta_index_name, end=end):
             seqcore = index.seqcore
             if len(seqcore) > 0:
                 return seqcore
         return ''
 
-    def get_beta_index_seqcore_rev(self):
-        for index in Index.objects.filter(name=self.beta_index_name):
+    def get_beta_index_seqcore_rev(self, end):
+        for index in Index.objects.filter(name=self.beta_index_name, end=end):
             seqcore = index.seqcore
             if len(seqcore) > 0:
                 seqcore = "".join(COMPLEMENT.get(base, base) for base in reversed(seqcore))

@@ -43,8 +43,10 @@ def get(request, experiment_id, sample_id=0):
         #raise Http404("Experiment does not exist")
         return HttpResponseRedirect(reverse('experiment:experiment_stock'))
 
-    alfa_index_list = Index.objects.filter(type='alfa').order_by('name')
-    beta_index_list = Index.objects.filter(type='beta').order_by('name')
+    alfa_indexi7_list = Index.objects.filter(type='alfa', end='I7').order_by('name')
+    beta_indexi7_list = Index.objects.filter(type='beta', end='I7').order_by('name')
+    alfa_indexi5_list = Index.objects.filter(type='alfa', end='I5').order_by('name')
+    beta_indexi5_list = Index.objects.filter(type='beta', end='I5').order_by('name')
     smart_list = Smart.objects.order_by('name')
     context = {  # for project creation
         'experiment_id': experiment.id,
@@ -52,8 +54,10 @@ def get(request, experiment_id, sample_id=0):
         'sample_id': 0,
         'alfa_subsample_ident': 'alfa',
         'beta_subsample_ident': 'beta',
-        'alfa_index_list': alfa_index_list,
-        'beta_index_list': beta_index_list,
+        'alfa_indexi7_list': alfa_indexi7_list,
+        'beta_indexi7_list': beta_indexi7_list,
+        'alfa_indexi5_list': alfa_indexi5_list,
+        'beta_indexi5_list': beta_indexi5_list,
         'smart_list': smart_list,
         'experiment_status': experiment.status,
     }
@@ -81,8 +85,10 @@ def get(request, experiment_id, sample_id=0):
                 'beta_index_name': sample.beta_index_name,
                 'beta_index_benchling': sample.beta_index_benchling,
                 'comments': sample.comments,
-                'alfa_index_list': alfa_index_list,
-                'beta_index_list': beta_index_list,
+                'alfa_indexi7_list': alfa_indexi7_list,
+                'beta_indexi7_list': beta_indexi7_list,
+                'alfa_indexi5_list': alfa_indexi5_list,
+                'beta_indexi5_list': beta_indexi5_list,
                 'smart_list': smart_list,
                 'experiment_status': experiment.status,
             }
@@ -124,10 +130,12 @@ def set(request, experiment_id, sample_id=0):
             sample.smart_name = request.POST['smart_name']
             sample.smart_benchling = request.POST['smart_benchling']
             sample.alfa_subsample_ident = request.POST['alfa_subsample_ident']
-            sample.alfa_index_name = request.POST['alfa_index_name']
+            sample.alfa_index_name = request.POST['alfa_indexi7_name']
+            sample.alfa_index2_name = request.POST['alfa_indexi5_name']
             sample.alfa_index_benchling = request.POST['alfa_index_benchling']
             sample.beta_subsample_ident = request.POST['beta_subsample_ident']
-            sample.beta_index_name = request.POST['beta_index_name']
+            sample.beta_index_name = request.POST['beta_indexi7_name']
+            sample.beta_index2_name = request.POST['beta_indexi5_name']
             sample.beta_index_benchling = request.POST['beta_index_benchling']
             sample.comments = request.POST['comments']
             sample.owner = user
@@ -149,10 +157,12 @@ def set(request, experiment_id, sample_id=0):
                               smart_name=request.POST['smart_name'],
                               smart_benchling = request.POST['smart_benchling'],
                               alfa_subsample_ident=request.POST['alfa_subsample_ident'],
-                              alfa_index_name=request.POST['alfa_index_name'],
+                              alfa_index_name=request.POST['alfa_indexi7_name'],
+                              alfa_index2_name=request.POST['alfa_indexi5_name'],
                               alfa_index_benchling=request.POST['alfa_index_benchling'],
                               beta_subsample_ident=request.POST['beta_subsample_ident'],
-                              beta_index_name=request.POST['beta_index_name'],
+                              beta_index_name=request.POST['beta_indexi7_name'],
+                              beta_index2_name=request.POST['beta_indexi5_name'],
                               beta_index_benchling=request.POST['beta_index_benchling'],
                               comments='comments',
                               owner=user
