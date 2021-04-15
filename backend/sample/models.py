@@ -84,7 +84,11 @@ class Sample(models.Model):
         return None
 
     def get_alfa_index_seqcore(self, end):
-        for index in Index.objects.filter(name=self.alfa_index_name, end=end):
+        if end == 'I7':
+            name = self.alfa_index_name
+        elif end == 'I5':
+            name = self.alfa_index2_name
+        for index in Index.objects.filter(name=name):
             seqcore = index.seqcore
             if len(seqcore) > 0:
                 return seqcore
@@ -127,15 +131,29 @@ class Sample(models.Model):
 
 
 class UsedBarcode:
-    def __init__(self, sample):
+    def __init__(self, sample, end):
         self.sample_ident = sample.ident
         self.owner = sample.owner
         self.smart_name = sample.smart_name
         self.smart_seqcore = sample.get_smart_seqcore()
-        self.alfa_index_name = sample.alfa_index_name
-        self.alfa_index_seqcore = sample.get_alfa_index_seqcore()
-        self.beta_index_name = sample.beta_index_name
-        self.beta_index_seqcore = sample.get_beta_index_seqcore()
+        self.alfa_index_name = self._get_alfa_name(sample, end)
+        self.alfa_index_seqcore = sample.get_alfa_index_seqcore(end)
+        self.beta_index_name = self._get_beta_name(sample, end)
+        self.beta_index_seqcore = sample.get_beta_index_seqcore(end)
+
+    def _get_alfa_name(self, sample, end):
+        if end == 'I7':
+            return sample.alfa_index_name
+        if end == 'I5':
+            return sample.alfa_index2_name
+        return ''
+
+    def _get_beta_name(self, sample, end):
+        if end == 'I7':
+            return sample.beta_index_name
+        if end == 'I5':
+            return sample.beta_index2_name
+        return ''
 
 
 class IdContainer:

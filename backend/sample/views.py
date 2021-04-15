@@ -80,9 +80,11 @@ def get(request, experiment_id, sample_id=0):
                 'smart_benchling': sample.smart_benchling,
                 'alfa_subsample_ident': sample.alfa_subsample_ident,
                 'alfa_index_name': sample.alfa_index_name,
+                'alfa_index2_name': sample.alfa_index2_name,
                 'alfa_index_benchling': sample.alfa_index_benchling,
                 'beta_subsample_ident': sample.beta_subsample_ident,
                 'beta_index_name': sample.beta_index_name,
+                'beta_index2_name': sample.beta_index2_name,
                 'beta_index_benchling': sample.beta_index_benchling,
                 'comments': sample.comments,
                 'alfa_indexi7_list': alfa_indexi7_list,
@@ -92,8 +94,12 @@ def get(request, experiment_id, sample_id=0):
                 'smart_list': smart_list,
                 'experiment_status': experiment.status,
             }
-        barcode = UsedBarcode(sample)
-        used_barcodes.append(barcode)
+        barcode1 = UsedBarcode(sample, 'I7')
+        if barcode1.alfa_index_name or barcode1.beta_index_name:
+            used_barcodes.append(barcode1)
+        barcode2 = UsedBarcode(sample, 'I5')
+        if barcode2.alfa_index_name or barcode2.beta_index_name:
+            used_barcodes.append(barcode2)
 
     context['used_barcodes'] = used_barcodes
     return render(request, 'sample.html', context)
@@ -158,11 +164,11 @@ def set(request, experiment_id, sample_id=0):
                               smart_benchling = request.POST['smart_benchling'],
                               alfa_subsample_ident=request.POST['alfa_subsample_ident'],
                               alfa_index_name=request.POST['alfa_indexi7_name'],
-                              alfa_index2_name=request.POST['alfa_indexi5_name'],
+                              alfa_index2_name=request.POST['alfa_indexi5_name'] if experiment.type == 'NextSeq' else '',
                               alfa_index_benchling=request.POST['alfa_index_benchling'],
                               beta_subsample_ident=request.POST['beta_subsample_ident'],
                               beta_index_name=request.POST['beta_indexi7_name'],
-                              beta_index2_name=request.POST['beta_indexi5_name'],
+                              beta_index2_name=request.POST['beta_indexi5_name'] if experiment.type == 'NextSeq' else '',
                               beta_index_benchling=request.POST['beta_index_benchling'],
                               comments='comments',
                               owner=user
