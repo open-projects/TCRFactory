@@ -164,11 +164,11 @@ def set(request, experiment_id, sample_id=0):
                               smart_benchling = request.POST['smart_benchling'],
                               alfa_subsample_ident=request.POST['alfa_subsample_ident'],
                               alfa_index_name=request.POST['alfa_indexi7_name'],
-                              alfa_index2_name=request.POST['alfa_indexi5_name'] if experiment.type == 'NextSeq' else '',
+                              alfa_index2_name=request.POST['alfa_indexi5_name'] if 'alfa_indexi5_name' in request.POST else '',
                               alfa_index_benchling=request.POST['alfa_index_benchling'],
                               beta_subsample_ident=request.POST['beta_subsample_ident'],
                               beta_index_name=request.POST['beta_indexi7_name'],
-                              beta_index2_name=request.POST['beta_indexi5_name'] if experiment.type == 'NextSeq' else '',
+                              beta_index2_name=request.POST['beta_indexi5_name'] if 'beta_indexi5_name' in request.POST else '',
                               beta_index_benchling=request.POST['beta_index_benchling'],
                               comments='comments',
                               owner=user
