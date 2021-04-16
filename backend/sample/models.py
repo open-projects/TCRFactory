@@ -78,44 +78,79 @@ class Sample(models.Model):
             return seqcore
         return ''
 
-    def get_alfa_index(self, end):
-        for index in Index.objects.filter(name=self.alfa_index_name, end=end):
+    def get_alfa_index(self):
+        for index in Index.objects.filter(name=self.alfa_index_name, end='I7'):
             return index
         return None
 
-    def get_alfa_index_seqcore(self, end):
-        if end == 'I7':
-            name = self.alfa_index_name
-        elif end == 'I5':
-            name = self.alfa_index2_name
-        for index in Index.objects.filter(name=name):
+    def get_alfa_index2(self):
+        for index in Index.objects.filter(name=self.alfa_index2_name, end='I5'):
+            return index
+        return None
+
+    def get_alfa_index_seqcore(self):
+        for index in Index.objects.filter(name=self.alfa_index_name):
             seqcore = index.seqcore
             if len(seqcore) > 0:
                 return seqcore
         return ''
 
-    def get_alfa_index_seqcore_rev(self, end):
-        for index in Index.objects.filter(name=self.alfa_index_name, end=end):
+    def get_alfa_index2_seqcore(self):
+        for index in Index.objects.filter(name=self.alfa_index2_name):
+            seqcore = index.seqcore
+            if len(seqcore) > 0:
+                return seqcore
+        return ''
+
+    def get_alfa_index_seqcore_rev(self):
+        for index in Index.objects.filter(name=self.alfa_index_name, end='I7'):
             seqcore = index.seqcore
             if len(seqcore) > 0:
                 seqcore = "".join(COMPLEMENT.get(base, base) for base in reversed(seqcore))
                 return seqcore
         return ''
 
-    def get_beta_index(self, end):
-        for index in Index.objects.filter(name=self.beta_index_name, end=end):
+    def get_alfa_index2_seqcore_rev(self):
+        for index in Index.objects.filter(name=self.alfa_index2_name, end='I5'):
+            seqcore = index.seqcore
+            if len(seqcore) > 0:
+                seqcore = "".join(COMPLEMENT.get(base, base) for base in reversed(seqcore))
+                return seqcore
+        return ''
+
+    def get_beta_index(self):
+        for index in Index.objects.filter(name=self.beta_index_name, end='I7'):
             return index
         return None
 
-    def get_beta_index_seqcore(self, end):
-        for index in Index.objects.filter(name=self.beta_index_name, end=end):
+    def get_beta_index2(self):
+        for index in Index.objects.filter(name=self.beta_index2_name, end='I5'):
+            return index
+
+    def get_beta_index_seqcore(self):
+        for index in Index.objects.filter(name=self.beta_index_name, end='I7'):
             seqcore = index.seqcore
             if len(seqcore) > 0:
                 return seqcore
         return ''
 
-    def get_beta_index_seqcore_rev(self, end):
-        for index in Index.objects.filter(name=self.beta_index_name, end=end):
+    def get_beta_index2_seqcore(self):
+        for index in Index.objects.filter(name=self.beta_index2_name, end='I5'):
+            seqcore = index.seqcore
+            if len(seqcore) > 0:
+                return seqcore
+        return ''
+
+    def get_beta_index_seqcore_rev(self):
+        for index in Index.objects.filter(name=self.beta_index_name, end='I7'):
+            seqcore = index.seqcore
+            if len(seqcore) > 0:
+                seqcore = "".join(COMPLEMENT.get(base, base) for base in reversed(seqcore))
+                return seqcore
+        return ''
+
+    def get_beta_index2_seqcore_rev(self):
+        for index in Index.objects.filter(name=self.beta_index2_name, end='I5'):
             seqcore = index.seqcore
             if len(seqcore) > 0:
                 seqcore = "".join(COMPLEMENT.get(base, base) for base in reversed(seqcore))
@@ -137,9 +172,9 @@ class UsedBarcode:
         self.smart_name = sample.smart_name
         self.smart_seqcore = sample.get_smart_seqcore()
         self.alfa_index_name = self._get_alfa_name(sample, end)
-        self.alfa_index_seqcore = sample.get_alfa_index_seqcore(end)
+        self.alfa_index_seqcore = self._get_alfa_index_seqcore(sample, end)
         self.beta_index_name = self._get_beta_name(sample, end)
-        self.beta_index_seqcore = sample.get_beta_index_seqcore(end)
+        self.beta_index_seqcore = self._get_beta_index_seqcore(sample, end)
 
     def _get_alfa_name(self, sample, end):
         if end == 'I7':
@@ -153,6 +188,20 @@ class UsedBarcode:
             return sample.beta_index_name
         if end == 'I5':
             return sample.beta_index2_name
+        return ''
+
+    def _get_alfa_index_seqcore(self, sample, end):
+        if end == 'I7':
+            return sample.get_alfa_index_seqcore()
+        if end == 'I5':
+            return sample.get_alfa_index2_seqcore()
+        return ''
+
+    def _get_beta_index_seqcore(self, sample, end):
+        if end == 'I7':
+            return sample.get_beta_index_seqcore()
+        if end == 'I5':
+            return sample.get_beta_index2_seqcore()
         return ''
 
 

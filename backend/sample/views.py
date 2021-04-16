@@ -100,7 +100,6 @@ def get(request, experiment_id, sample_id=0):
         barcode2 = UsedBarcode(sample, 'I5')
         if barcode2.alfa_index_name or barcode2.beta_index_name:
             used_barcodes.append(barcode2)
-
     context['used_barcodes'] = used_barcodes
     return render(request, 'sample.html', context)
 
@@ -109,7 +108,7 @@ def set(request, experiment_id, sample_id=0):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('index:index'))
 
-    user = request.user
+    user = request.user.username
 
     try:
         experiment = Experiment.objects.get(id=experiment_id)
@@ -137,11 +136,11 @@ def set(request, experiment_id, sample_id=0):
             sample.smart_benchling = request.POST['smart_benchling']
             sample.alfa_subsample_ident = request.POST['alfa_subsample_ident']
             sample.alfa_index_name = request.POST['alfa_indexi7_name']
-            sample.alfa_index2_name = request.POST['alfa_indexi5_name']
+            sample.alfa_index2_name = request.POST['alfa_indexi5_name'] if 'alfa_indexi5_name' in request.POST else ''
             sample.alfa_index_benchling = request.POST['alfa_index_benchling']
             sample.beta_subsample_ident = request.POST['beta_subsample_ident']
             sample.beta_index_name = request.POST['beta_indexi7_name']
-            sample.beta_index2_name = request.POST['beta_indexi5_name']
+            sample.beta_index2_name = request.POST['beta_indexi5_name'] if 'beta_indexi5_name' in request.POST else ''
             sample.beta_index_benchling = request.POST['beta_index_benchling']
             sample.comments = request.POST['comments']
             sample.owner = user
