@@ -20,6 +20,8 @@ def norm_index_type(type):
                 return type
     return ''
 
+class Barcode:
+    seqcore = 'tggtatcaacgCAGAGtNNNNtNNNNtNNNNtct'
 
 class Smart(models.Model):
     name = models.CharField(max_length=200, unique=True)

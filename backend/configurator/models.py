@@ -5,7 +5,7 @@
 import re
 from django.template.loader import render_to_string
 from sample.models import Sample
-
+from primers.models import Barcode
 
 def makeSamplesheet(experiment):
     sample_list = Sample.objects.filter(experiment_id=experiment.id).order_by('id')  # ordering is important !
@@ -31,7 +31,12 @@ def makeSampleinfo(experiment):
         if sample.alfa_index_name:
             alfa_name = sample.get_alfa_name()
             chain = 'TRA'
-            barcodes = sample.get_smart_seqcore()
+            barcodes = ''
+            if experiment.type == 'MiSeq':
+                barcodes = sample.get_smart_seqcore()
+            elif experiment.type == 'NextSeq':
+                barcodes = Barcode.seqcore
+
             r1 = '_'.join((re.sub(r'_', '-', alfa_name), 'S' + str(n), 'L001', 'R1', '001.fastq.gz '))  # re.sub(r'_', '-', alfa_name) !!! illumina replaces '_' symbol by '-'
             r2 = ''
             if paired:
@@ -48,7 +53,12 @@ def makeSampleinfo(experiment):
         if sample.beta_index_name:
             beta_name = sample.get_beta_name()
             chain = 'TRB'
-            barcodes = sample.get_smart_seqcore()
+            barcodes = ''
+            if type == 'MiSeq':
+                barcodes = sample.get_smart_seqcore()
+            elif type == 'NextSeq':
+                barcodes = Barcode.seqcore
+
             r1 = '_'.join((re.sub(r'_', '-', beta_name), 'S' + str(n), 'L001', 'R1', '001.fastq.gz'))  # re.sub(r'_', '-', beta_name) !!! illumina replaces '_' symbol by '-'
             r2 = ''
             if paired:
