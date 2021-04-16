@@ -42,7 +42,6 @@ def get(request, experiment_id=0):
     file_item = File.objects.filter(experiment_id=experiment.id).first()
 
     input_path = SITE_PATH + re.sub(r'/[^/]*$', '/', file_item.file.url)
-    print(input_path)
     output_path = input_path + re.sub(r'/$', '', pipeline_settings.OUT_DIRNAME)
     log_file = output_path + '/' + pipeline_settings.LOG_FILE
     compressed_file = input_path + pipeline_settings.OUT_FILE
