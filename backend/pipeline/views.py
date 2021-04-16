@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse, Http404
 
 from experiment.models import Experiment
-from pipeline import settings as pipelne_settings
+from pipeline import settings as pipeline_settings
 from configurator.models import makeSampleinfo
 from configurator.settings import SAMPLE_INFO_FILENAME, SAMPLE_INFO_PATTERN
 from filestorage.models import File
@@ -43,17 +43,18 @@ def get(request, experiment_id=0):
 
     input_path = SITE_PATH + re.sub(r'/[^/]*$', '/', file_item.file.url)
     print(input_path)
-    output_path = input_path + re.sub(r'/$', '', pipelne_settings.OUT_DIRNAME)
-    log_file = output_path + '/' + pipelne_settings.LOG_FILE
-    compressed_file = input_path + pipelne_settings.OUT_FILE
-    cmd_array = [pipelne_settings.PYTHON_PATH,
-                 pipelne_settings.PIPER_PATH,
-                 '-m', pipelne_settings.MAX_MEMORY,
+    output_path = input_path + re.sub(r'/$', '', pipeline_settings.OUT_DIRNAME)
+    log_file = output_path + '/' + pipeline_settings.LOG_FILE
+    compressed_file = input_path + pipeline_settings.OUT_FILE
+    cmd_array = [pipeline_settings.PYTHON_PATH,
+                 pipeline_settings.PIPER_PATH,
+                 '-m', pipeline_settings.MAX_MEMORY,
                  '-i', input_path,
                  '-o', output_path,
                  '-l', log_file,
                  '-z', compressed_file,
-                 '-p', str(pipelne_settings.PORT),
+                 '-p', str(pipeline_settings.PORT),
+                 '-t', experiment.type,
                  ]
 
     if request.POST.get('overseqThreshold', False):
@@ -70,7 +71,7 @@ def get(request, experiment_id=0):
 
     taskRemover()  # remove completed tasks
     new_task = None
-    for k in range(pipelne_settings.THREADS):  # find an empty slot for the new task
+    for k in range(pipeline_settings.THREADS):  # find an empty slot for the new task
         task_in_process = TaskQueue.objects.filter(thread=k).first()
         if not task_in_process:
             try:
